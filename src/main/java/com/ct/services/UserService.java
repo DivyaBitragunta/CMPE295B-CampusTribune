@@ -38,7 +38,7 @@ public class UserService {
 		UserDAO userDAO = new UserDAO();
 		User user=new User();
 		Integer id = generateId();
-		while(userRepo.exists(id))
+		while(userDetailsRepo.exists(id))
 			id = generateId();
 		userDAO.setId(id);
 		userDAO.setName(newUserDAO.getName());
@@ -52,10 +52,9 @@ public class UserService {
 			user.setEmail(userDAO.getEmail());
 			user.setName(userDAO.getName());
 			user.setToken(null);
-			return userRepo.save(user);
+			
 		}
-		else
-			return user;
+		return user;
 	}
 
 	public boolean isValid(int userId) {
@@ -64,10 +63,10 @@ public class UserService {
 		return true;
 	}
 
-	public User getUserDetails(int userId) {
-		User user=new User();
+	public UserDAO getUserDetails(int userId) {
+		UserDAO user=new UserDAO();
 		if(isValid(userId)){
-			user=userRepo.findOne(userId);			
+			user=userDetailsRepo.findOne(userId);			
 		}			
 		return user;
 	}

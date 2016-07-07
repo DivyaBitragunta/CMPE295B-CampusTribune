@@ -3,6 +3,8 @@ package com.ct.dao;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Document(collection = "users")
 public class UserDAO {
@@ -10,6 +12,7 @@ public class UserDAO {
 	private Integer id;
 	private String name;
 	private String email;
+	@JsonIgnore
 	private String password;
 	public String created_at;
 	
@@ -85,10 +88,4 @@ public class UserDAO {
 			return false;
 		return true;
 	}
-	
-	
-	
-	
-
-
 }

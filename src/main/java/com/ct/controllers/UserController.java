@@ -32,12 +32,12 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/{userId}", method = RequestMethod.GET, produces ="application/json")
-    public ResponseEntity<User> getUser(@PathVariable("userId") Integer userId ) {
+    public ResponseEntity<UserDAO> getUser(@PathVariable("userId") Integer userId ) {
 	  if(userService.isValid(userId))
-		  return new ResponseEntity<User>(userService.getUserDetails(userId), HttpStatus.OK);
+		  return new ResponseEntity<UserDAO>(userService.getUserDetails(userId), HttpStatus.OK);
 	  else{
 		  
-		  return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+		  return new ResponseEntity<UserDAO>(HttpStatus.NOT_FOUND);
 	  }
     }
 	
