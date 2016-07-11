@@ -9,9 +9,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import com.ct.dao.UserDAO;
-import com.ct.model.User;
 import com.ct.repositories.IUserDetailsRepository;
-import com.ct.services.UserService;
 
 @Service
 public class AuthProvider implements AuthenticationProvider {
@@ -22,25 +20,40 @@ public class AuthProvider implements AuthenticationProvider {
 	@Override
 	public Authentication authenticate(Authentication authentication)
 			throws AuthenticationException {
-		String userEmail = authentication.getName();
-		System.out.println("userEmail in authProvider: "+userEmail );
+		String userId = authentication.getName();
+		System.out.println("userId in authProvider: "+userId );
 		String password = authentication.getCredentials().toString();
-		if (userEmail != null && password != null) {
-			UserDAO userDAO = getUserDAO(userEmail);
-			System.out.println("userDAO in authProvider:"+userDAO.getEmail() );
-			if (!userDAO.getPassword().equals(password)) {
-				throw new BadCredentialsException("Password did not match");
+		System.out.println("userId-password in authProvider: "+password );
+		if (userId != null && password != null) {
+			UserDAO userDAO = getUserDAO(userId);
+			if(userDAO!=null){
+				System.out.println("userDAO in authProvider:"+userDAO.getEmail() );
+				System.out.println("userDAO password----"+userDAO.getPassword());
+				if (!userDAO.getPassword().equals(password)) {
+					throw new BadCredentialsException("Password did not match");
+				}
 			}
+			else{
+				throw new BadCredentialsException("UserId did not match");
+			}
+			
 		}
-		Authentication auth = new UsernamePasswordAuthenticationToken(userEmail,
+		System.out.println("Passwords matched");
+		Authentication auth = new UsernamePasswordAuthenticationToken(userId,
 				password);
 		return auth;
 	}
 
 	private UserDAO getUserDAO(String userName) {
-		UserDAO userDAO = userDetailsRepo.findByEmail(userName);
-		if(userDAO!=null)
+		UserDAO userDAO = userDetailsRepo.findById(userName);
+		if(userDAO!=null){
+			System.out.println("In getUserDAO");
+			System.out.println("email:"+userDAO.getEmail());
+			System.out.println("password:"+userDAO.getPassword());
+			System.out.println("firstName"+userDAO.getFirstName());
+			System.out.println("lastName"+userDAO.getLastName());
 			return userDAO;
+		}
 		else{
 			return null;
 		}

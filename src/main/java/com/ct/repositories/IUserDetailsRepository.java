@@ -6,11 +6,12 @@ import org.springframework.stereotype.Service;
 import com.ct.dao.UserDAO;
 
 @Service
-public interface IUserDetailsRepository extends MongoRepository<UserDAO, Integer> {
+public interface IUserDetailsRepository extends MongoRepository<UserDAO, String> {
 
-	public UserDAO findById(Integer id);
+	public UserDAO findById(String id);
 
 	public UserDAO findByEmail(String email);
+
 	
 	
 	

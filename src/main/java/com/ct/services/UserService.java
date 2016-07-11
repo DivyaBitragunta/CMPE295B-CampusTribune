@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ct.dao.UserDAO;
+import com.ct.mail.Mail;
 import com.ct.model.User;
 import com.ct.repositories.IUserDetailsRepository;
 import com.ct.repositories.IUserRepository;
@@ -28,50 +29,61 @@ public class UserService {
 	@Autowired
 	private AuthHelper authHelper;
 	
+	Mail mail= new Mail();
 	
 	private Integer generateId(){
 		Random r = new Random();
-		return r.nextInt(9000) + 1000; 
+		return r.nextInt(900) + 100; 
 	}
 	
 	public User createUser(UserDAO newUserDAO) {
 		UserDAO userDAO = new UserDAO();
 		User user=new User();
+		StringBuilder str= new StringBuilder();
+		str.append(newUserDAO.getFirstName().substring(0,2));
+		str.append(newUserDAO.getLastName().substring(0,2));
 		Integer id = generateId();
-		while(userDetailsRepo.exists(id))
+		String userId=str.toString()+id;
+		while(userDetailsRepo.exists(userId)){
 			id = generateId();
-		userDAO.setId(id);
-		userDAO.setName(newUserDAO.getName());
+			userId=userId.substring(0, userId.length()-3);
+			userId=userId+id;
+			
+		}
+		userDAO.setId(userId);
+		userDAO.setFirstName(newUserDAO.getFirstName());
+		userDAO.setLastName(newUserDAO.getLastName());
 		DateTime dt = new DateTime(DateTimeZone.UTC);		
 		userDAO.created_at =  dt.toString(ISODateTimeFormat.dateTime().withZoneUTC());
 		userDAO.setPassword(newUserDAO.getPassword()); 
 		userDAO.setEmail(newUserDAO.getEmail());
-		if(userDetailsRepo.save(userDAO)!=null){
-			
+		if(userDetailsRepo.save(userDAO)!=null){			
 			user.setId(userDAO.getId());
 			user.setEmail(userDAO.getEmail());
-			user.setName(userDAO.getName());
+			user.setFirstName(userDAO.getFirstName());
+			user.setLastName(userDAO.getLastName());
 			user.setToken(null);
 			
 		}
+		mail.sendEmail(user.getEmail(), user.getId());
 		return user;
+		
+		
 	}
 
-	public boolean isValid(int userId) {
+	public boolean isValid(String userId) {
 		if(!(userDetailsRepo.exists(userId)))
 			return false;
 		return true;
 	}
 
-	public UserDAO getUserDetails(int userId) {
+	public UserDAO getUserDetails(String userId) {
 		UserDAO user=new UserDAO();
 		if(isValid(userId)){
 			user=userDetailsRepo.findOne(userId);			
 		}			
 		return user;
 	}
-
-	
 
 	private String createAuthToken() {
 		String token = Base64.encodeBase64String(UUID.randomUUID().toString()
@@ -81,13 +93,14 @@ public class UserService {
 	}
 
 	public User getAuthenticatedUser() {
-		String userEmail = authHelper.getUsername();
+		String userId = authHelper.getUsername();
 		String token = createAuthToken();
-		UserDAO userDAO=userDetailsRepo.findByEmail(userEmail);
+		UserDAO userDAO=userDetailsRepo.findById(userId);
 		User user=new User();
 		user.setId(userDAO.getId());
 		user.setEmail(userDAO.getEmail());
-		user.setName(userDAO.getName());
+		user.setFirstName(userDAO.getFirstName());
+		user.setLastName(userDAO.getLastName());
 		user.setToken(token);
 		return user;
 
