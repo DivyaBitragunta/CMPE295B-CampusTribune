@@ -30,11 +30,11 @@ public class AuthProvider implements AuthenticationProvider {
 				System.out.println("userDAO in authProvider:"+userDAO.getEmail() );
 				System.out.println("userDAO password----"+userDAO.getPassword());
 				if (!userDAO.getPassword().equals(password)) {
-					throw new BadCredentialsException("Password did not match");
+					throw new BadCredentialsException("Password did not match!");
 				}
 			}
 			else{
-				throw new BadCredentialsException("UserId did not match");
+				throw new BadCredentialsException("UserId did not match any record!");
 			}
 			
 		}
