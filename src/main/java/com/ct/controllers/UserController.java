@@ -23,6 +23,7 @@ public class UserController {
 	
 	@RequestMapping(value = "/signUp", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
 	public ResponseEntity<User> signUp(@RequestBody UserDAO newUserDAO) throws AuthenticationException {
+		System.out.println("Backend call worked!");
 		User userCreated=userService.createUser(newUserDAO);
 		if (userCreated != null)
 			return new ResponseEntity<User>(userCreated, HttpStatus.CREATED);

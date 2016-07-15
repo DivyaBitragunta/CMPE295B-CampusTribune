@@ -1,19 +1,31 @@
 package com.ct.dao;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 @Document(collection = "users")
 public class UserDAO {
+	@Null
 	@Id
 	private String id;
+	@NotNull
+	@JsonProperty
 	private String firstName;
+	@NotNull
 	private String lastName;
+	@NotNull
+	//@Indexed(unique=true)
 	private String email;
+	@NotNull
 	private String password;
+	@Null
 	public String created_at;
 	public String getId() {
 		return id;
@@ -39,7 +51,6 @@ public class UserDAO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}

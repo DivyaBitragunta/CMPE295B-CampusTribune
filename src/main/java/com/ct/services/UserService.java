@@ -37,6 +37,7 @@ public class UserService {
 	}
 	
 	public User createUser(UserDAO newUserDAO) {
+		System.out.println("In backend create user service method!!");
 		UserDAO userDAO = new UserDAO();
 		User user=new User();
 		StringBuilder str= new StringBuilder();
@@ -62,6 +63,7 @@ public class UserService {
 			user.setEmail(userDAO.getEmail());
 			user.setFirstName(userDAO.getFirstName());
 			user.setLastName(userDAO.getLastName());
+			//user.setPassword(userDAO.getPassword());
 			user.setToken(null);
 			
 		}
@@ -93,16 +95,27 @@ public class UserService {
 	}
 
 	public User getAuthenticatedUser() {
+		System.out.println("In backend login user service method!!");
 		String userId = authHelper.getUsername();
+		System.out.println("username from auth helper: "+userId);
 		String token = createAuthToken();
 		UserDAO userDAO=userDetailsRepo.findById(userId);
-		User user=new User();
-		user.setId(userDAO.getId());
-		user.setEmail(userDAO.getEmail());
-		user.setFirstName(userDAO.getFirstName());
-		user.setLastName(userDAO.getLastName());
-		user.setToken(token);
-		return user;
+		if(userDAO!=null){
+			User user=new User();
+			user.setId(userDAO.getId());
+			user.setEmail(userDAO.getEmail());
+			user.setFirstName(userDAO.getFirstName());
+			user.setLastName(userDAO.getLastName());
+			user.setToken(token);
+			return user;
+		}
+		else{
+			System.out.println("Unable to retrieve user from DB!!");
+			return null;
+		}
+			
+		
+		
 
 	}
 
