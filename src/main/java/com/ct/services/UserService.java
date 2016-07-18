@@ -119,4 +119,9 @@ public class UserService {
 
 	}
 
+	public boolean validateUserId(String userId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
