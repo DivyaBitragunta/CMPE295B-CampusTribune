@@ -10,7 +10,7 @@ public class PostDAO {
 	private int id;
 	private String headline;
 	private String content;
-	private int userId;
+	private String userId;
 	private int voteScore;
 	private boolean isAlert;
 	private String category;
@@ -68,7 +68,7 @@ public class PostDAO {
 	/**
 	 * @return the userId
 	 */
-	public int getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
@@ -76,7 +76,7 @@ public class PostDAO {
 	 * @param userId
 	 *            the userId to set
 	 */
-	public void setUserId(int userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 

@@ -10,7 +10,7 @@ public class PostCommentDAO {
 	private int id;
 	private int postId;
 	private String commentContent;
-	private int userId;
+	private String userId;
 	private int reportScore;
 	private String createdOn;
 	private String lastEditedOn;
@@ -63,7 +63,7 @@ public class PostCommentDAO {
 	/**
 	 * @return the userId
 	 */
-	public int getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
@@ -71,7 +71,7 @@ public class PostCommentDAO {
 	 * @param userId
 	 *            the userId to set
 	 */
-	public void setUserId(int userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 

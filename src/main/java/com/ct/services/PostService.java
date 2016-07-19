@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 import com.ct.algorithms.Report;
 import com.ct.algorithms.Vote;
 import com.ct.dao.PostDAO;
-import com.ct.dao.UserActionsForPostDAO;
+import com.ct.dao.PostUserDAO;
 import com.ct.model.Post;
 import com.ct.repositories.IPostRepository;
-import com.ct.repositories.IUserActionsForPostRepository;
+import com.ct.repositories.IPostUserRepository;
 
 @Service
 public class PostService {
@@ -24,7 +24,7 @@ public class PostService {
 	private IPostRepository postRepo;
 	
 	@Autowired
-	private IUserActionsForPostRepository userActionsRepo;
+	private IPostUserRepository postUserRepo;
 	
 	public PostService() {
 		super();
@@ -95,13 +95,13 @@ public class PostService {
 		return true;
 	}
 	
-	public boolean userActionExists(int userid,int postid) {
-		if (userActionsRepo.findByUseridAndPostid(userid, postid)==null)
+	public boolean userActionExists(String userid) {
+		if (postUserRepo.findByUser(userid)==null)
 			return false;
 		return true;
 	}
 	
-	public Post votePost(int voteType,int user_id,Post post){
+	public Post votePost(int voteType,String user_id,Post post){
 		PostDAO postDAO = new PostDAO();
 		postDAO=postRepo.findById(post.getId());
 		int newVoteScore= Vote.calculateVoteScore(voteType, postDAO.getVoteScore());
@@ -111,27 +111,22 @@ public class PostService {
 		if (postRepo.save(postDAO) != null) {
 			post.setVoteScore(postDAO.getVoteScore());
 			post.setLastEditedOn(postDAO.getLastEditedOn());
-			UserActionsForPostDAO userActionsDAO=userActionsRepo.findByUseridAndPostid(user_id, post.getId());
+			PostUserDAO userActionsDAO=postUserRepo.findByUser(user_id);
 			if(userActionsDAO!=null){
-				updateUserVoteActions(voteType,userActionsDAO);
-				userActionsRepo.save(userActionsDAO);
+				updateUserVoteActions(voteType,post.getId(),userActionsDAO);
+				postUserRepo.save(userActionsDAO);
 			}else{
-				UserActionsForPostDAO userActionsDAO1 = new UserActionsForPostDAO();
-				int id = generateId();
-				while (postRepo.exists(id))
-					id = generateId();
-				userActionsDAO1.setId(id);
-				userActionsDAO1.setUserid(user_id);
-				userActionsDAO1.setPostid(post.getId());
-				updateUserVoteActions(voteType,userActionsDAO1);
-				userActionsRepo.save(userActionsDAO1);
+				PostUserDAO userActionsDAO1 = new PostUserDAO();
+				userActionsDAO1.setUser(user_id);
+				updateUserVoteActions(voteType,post.getId(),userActionsDAO1);
+				postUserRepo.save(userActionsDAO1);
 			}
 			
 		}
 		return post;
 	}
 	
-	public Post reportPost(int user_id,Post post){
+	public Post reportPost(String user_id,Post post){
 		PostDAO postDAO = new PostDAO();
 		postDAO=postRepo.findById(post.getId());
 		int newReportScore=Report.updateReportScore(postDAO.getReportScore());
@@ -145,20 +140,18 @@ public class PostService {
 			if(postRepo.save(postDAO)!=null){
 				post.setReportScore(postDAO.getReportScore());
 				post.setLastEditedOn(postDAO.getLastEditedOn());
-				UserActionsForPostDAO userActionsDAO=userActionsRepo.findByUseridAndPostid(user_id, post.getId());
+				PostUserDAO userActionsDAO=postUserRepo.findByUser(user_id);
 				if(userActionsDAO!=null){
-					userActionsDAO.setReportedBy(true);
-					userActionsRepo.save(userActionsDAO);
+					userActionsDAO.getReportedPosts().add(post.getId());
+					postUserRepo.save(userActionsDAO);
 				}else{
-					UserActionsForPostDAO userActionsDAO1 = new UserActionsForPostDAO();
+					PostUserDAO userActionsDAO1 = new PostUserDAO();
 					int id = generateId();
 					while (postRepo.exists(id))
 						id = generateId();
-					userActionsDAO1.setId(id);
-					userActionsDAO1.setUserid(user_id);
-					userActionsDAO1.setPostid(post.getId());
-					userActionsDAO1.setReportedBy(true);
-					userActionsRepo.save(userActionsDAO1);
+					userActionsDAO1.setUser(user_id);
+					userActionsDAO1.getReportedPosts().add(post.getId());
+					postUserRepo.save(userActionsDAO1);
 				}
 				
 			}
@@ -166,36 +159,34 @@ public class PostService {
 		}
 	}
 	
-	public void followPost(int user_id,int post_id){
-		UserActionsForPostDAO userActionsDAO = userActionsRepo.findByUseridAndPostid(user_id, post_id);
+	public void followPost(String user_id,Integer post_id){
+		PostUserDAO userActionsDAO = postUserRepo.findByUser(user_id);
 		if (userActionsDAO != null) {
-			if(userActionsDAO.isFollowedBy())
-				userActionsDAO.setFollowedBy(false);
+			if(userActionsDAO.getFollowingPosts().contains(post_id))
+				userActionsDAO.getFollowingPosts().remove(post_id);
 			else
-				userActionsDAO.setFollowedBy(true);
-			userActionsRepo.save(userActionsDAO);
+				userActionsDAO.getFollowingPosts().add(post_id);
+			postUserRepo.save(userActionsDAO);
 		} else {
-			UserActionsForPostDAO userActionsDAO1 = new UserActionsForPostDAO();
+			PostUserDAO userActionsDAO1 = new PostUserDAO();
 			int id = generateId();
 			while (postRepo.exists(id))
 				id = generateId();
-			userActionsDAO1.setId(id);
-			userActionsDAO1.setUserid(user_id);
-			userActionsDAO1.setPostid(post_id);
-			userActionsDAO1.setFollowedBy(true);
-			userActionsRepo.save(userActionsDAO1);
+			userActionsDAO1.setUser(user_id);
+			userActionsDAO1.getFollowingPosts().add(post_id);
+			postUserRepo.save(userActionsDAO1);
 		}
 	}
 	
-	private void  updateUserVoteActions(int voteType,UserActionsForPostDAO userActionsDAO){
+	private void  updateUserVoteActions(int voteType,int postid,PostUserDAO userActionsDAO){
 		if(voteType==1)
-			userActionsDAO.setUpvotedBy(true);
+			userActionsDAO.getUpVotedPosts().add(postid);
 		else if(voteType==2)
-			userActionsDAO.setUpvotedBy(false);
+			userActionsDAO.getUpVotedPosts().remove(postid);
 		else if(voteType==3)
-			userActionsDAO.setDownvotedBy(true);
+			userActionsDAO.getDownVotedPosts().add(postid);
 		else if(voteType==4)
-			userActionsDAO.setDownvotedBy(false);
+			userActionsDAO.getDownVotedPosts().remove(postid);
 	}
 
 	private Integer generateId() {

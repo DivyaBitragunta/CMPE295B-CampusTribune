@@ -5,7 +5,7 @@ public class Post {
 	private int id;
 	private String headline;
 	private String content;
-	private int userId;
+	private String userId;
 	private int voteScore;
 	private boolean isAlert;
 	private String category;
@@ -53,13 +53,13 @@ public class Post {
 	/**
 	 * @return the userId
 	 */
-	public int getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 	/**
 	 * @param userId the userId to set
 	 */
-	public void setUserId(int userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 	/**
