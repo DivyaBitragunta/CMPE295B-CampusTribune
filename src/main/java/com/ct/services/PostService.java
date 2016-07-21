@@ -14,6 +14,7 @@ import com.ct.algorithms.Vote;
 import com.ct.dao.PostDAO;
 import com.ct.dao.PostUserDAO;
 import com.ct.model.Post;
+import com.ct.model.PostUser;
 import com.ct.repositories.IPostRepository;
 import com.ct.repositories.IPostUserRepository;
 
@@ -109,6 +110,7 @@ public class PostService {
 		DateTime dt = new DateTime(DateTimeZone.UTC);
 		postDAO.setLastEditedOn(dt.toString(ISODateTimeFormat.dateTime().withZoneUTC()));
 		if (postRepo.save(postDAO) != null) {
+			setPostObj(post, postDAO);
 			post.setVoteScore(postDAO.getVoteScore());
 			post.setLastEditedOn(postDAO.getLastEditedOn());
 			PostUserDAO userActionsDAO=postUserRepo.findByUser(user_id);
@@ -138,6 +140,7 @@ public class PostService {
 			postDAO.setLastEditedOn(dt.toString(ISODateTimeFormat.dateTime().withZoneUTC()));
 			postDAO.setReportScore(newReportScore);
 			if(postRepo.save(postDAO)!=null){
+				setPostObj(post, postDAO);
 				post.setReportScore(postDAO.getReportScore());
 				post.setLastEditedOn(postDAO.getLastEditedOn());
 				PostUserDAO userActionsDAO=postUserRepo.findByUser(user_id);
@@ -146,9 +149,6 @@ public class PostService {
 					postUserRepo.save(userActionsDAO);
 				}else{
 					PostUserDAO userActionsDAO1 = new PostUserDAO();
-					int id = generateId();
-					while (postRepo.exists(id))
-						id = generateId();
 					userActionsDAO1.setUser(user_id);
 					userActionsDAO1.getReportedPosts().add(post.getId());
 					postUserRepo.save(userActionsDAO1);
@@ -159,11 +159,11 @@ public class PostService {
 		}
 	}
 	
-	public void followPost(String user_id,Integer post_id){
+	public void followPost(String user_id,int post_id){
 		PostUserDAO userActionsDAO = postUserRepo.findByUser(user_id);
 		if (userActionsDAO != null) {
 			if(userActionsDAO.getFollowingPosts().contains(post_id))
-				userActionsDAO.getFollowingPosts().remove(post_id);
+				userActionsDAO.getFollowingPosts().remove(Integer.valueOf(post_id));
 			else
 				userActionsDAO.getFollowingPosts().add(post_id);
 			postUserRepo.save(userActionsDAO);
@@ -178,15 +178,27 @@ public class PostService {
 		}
 	}
 	
+	public PostUser getUserActioForPosts(String userId){
+		PostUserDAO postUserDAO = postUserRepo.findByUser(userId);
+		PostUser postUser = new PostUser();
+		postUser.setUser(userId);
+		postUser.setUpVotedPosts(postUserDAO.getUpVotedPosts());
+		postUser.setDownVotedPosts(postUserDAO.getDownVotedPosts());
+		postUser.setReportedPosts(postUserDAO.getReportedPosts());
+		postUser.setFollowingPosts(postUserDAO.getFollowingPosts());
+		postUser.setReportedComments(postUserDAO.getReportedComments());
+		return postUser;
+	}
+	
 	private void  updateUserVoteActions(int voteType,int postid,PostUserDAO userActionsDAO){
 		if(voteType==1)
 			userActionsDAO.getUpVotedPosts().add(postid);
 		else if(voteType==2)
-			userActionsDAO.getUpVotedPosts().remove(postid);
+			userActionsDAO.getUpVotedPosts().remove(Integer.valueOf(postid));
 		else if(voteType==3)
 			userActionsDAO.getDownVotedPosts().add(postid);
 		else if(voteType==4)
-			userActionsDAO.getDownVotedPosts().remove(postid);
+			userActionsDAO.getDownVotedPosts().remove(Integer.valueOf(postid));
 	}
 
 	private Integer generateId() {

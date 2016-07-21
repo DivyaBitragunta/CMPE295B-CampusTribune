@@ -88,10 +88,10 @@ public class PostCommentsController {
 
 	}
 
-	@RequestMapping(value = "/report", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public ResponseEntity<PostComment> reportPost(@RequestBody @Valid PostComment postComment) {
+	@RequestMapping(value = "/report/byUser/{user_id}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public ResponseEntity<PostComment> reportComment(@PathVariable("user_id") String user_id,@RequestBody @Valid PostComment postComment) {
 		if (postCommentService.commentExists(postComment.getId())) {
-			return new ResponseEntity<PostComment>(postCommentService.reportComment(postComment), HttpStatus.OK);
+			return new ResponseEntity<PostComment>(postCommentService.reportComment(postComment,user_id), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<PostComment>(HttpStatus.NOT_FOUND);
 		}

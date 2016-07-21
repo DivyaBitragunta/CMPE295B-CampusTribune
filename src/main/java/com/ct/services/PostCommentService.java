@@ -11,16 +11,19 @@ import org.springframework.stereotype.Service;
 
 import com.ct.algorithms.Report;
 import com.ct.dao.PostCommentDAO;
-import com.ct.dao.PostDAO;
-import com.ct.model.Post;
+import com.ct.dao.PostUserDAO;
 import com.ct.model.PostComment;
 import com.ct.repositories.IPostCommentRepository;
+import com.ct.repositories.IPostUserRepository;
 
 @Service
 public class PostCommentService {
 
 	@Autowired
 	private IPostCommentRepository commentRepo;
+	
+	@Autowired
+	private IPostUserRepository postUserRepo;
 
 	public PostCommentService() {
 		super();
@@ -82,7 +85,7 @@ public class PostCommentService {
 		commentRepo.delete(postCommentDAO);
 	}
 	
-	public PostComment reportComment(PostComment comment){
+	public PostComment reportComment(PostComment comment,String userId){
 		PostCommentDAO postCommentDAO = new PostCommentDAO();
 		postCommentDAO=commentRepo.findByIdAndPostId(comment.getId(),comment.getPostId());
 		int newReportScore=Report.updateReportScore(postCommentDAO.getReportScore());
@@ -94,8 +97,19 @@ public class PostCommentService {
 			postCommentDAO.setLastEditedOn(dt.toString(ISODateTimeFormat.dateTime().withZoneUTC()));
 			postCommentDAO.setReportScore(newReportScore);
 			if(commentRepo.save(postCommentDAO)!=null){
+				setCommentObj(comment, postCommentDAO);
 				comment.setReportScore(postCommentDAO.getReportScore());
 				comment.setLastEditedOn(postCommentDAO.getLastEditedOn());
+				PostUserDAO userActionsDAO=postUserRepo.findByUser(userId);
+				if(userActionsDAO!=null){
+					userActionsDAO.getReportedComments().add(comment.getId());
+					postUserRepo.save(userActionsDAO);
+				}else{
+					PostUserDAO userActionsDAO1 = new PostUserDAO();
+					userActionsDAO1.setUser(userId);
+					userActionsDAO1.getReportedPosts().add(comment.getId());
+					postUserRepo.save(userActionsDAO1);
+				}
 			}
 			return comment;
 		}
@@ -103,6 +117,12 @@ public class PostCommentService {
 
 	public boolean commentExists(int id) {
 		if (!(commentRepo.exists(id)))
+			return false;
+		return true;
+	}
+	
+	public boolean userActionExists(String userid) {
+		if (postUserRepo.findByUser(userid)==null)
 			return false;
 		return true;
 	}

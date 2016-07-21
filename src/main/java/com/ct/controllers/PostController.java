@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ct.model.Post;
+import com.ct.model.PostUser;
 import com.ct.services.PostService;
 
 @RestController
@@ -104,6 +105,15 @@ public class PostController {
 			return new ResponseEntity<String>(HttpStatus.OK);
 		} else {
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@RequestMapping(value = "/getUserActions/{user_id}", method = RequestMethod.GET, produces = "application/json", consumes = "application/json")
+	public ResponseEntity<PostUser> getUserActioForPosts(@PathVariable("user_id") String user_id) {
+		if (postService.userActionExists(user_id)) {
+			return new ResponseEntity<PostUser>(postService.getUserActioForPosts(user_id),HttpStatus.OK);
+		} else {
+			return new ResponseEntity<PostUser>(HttpStatus.NOT_FOUND);
 		}
 	}
 	
