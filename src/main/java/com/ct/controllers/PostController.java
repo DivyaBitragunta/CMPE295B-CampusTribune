@@ -80,7 +80,7 @@ public class PostController {
 	}
 	
 	@RequestMapping(value = "/vote/{voteType}/byUser/{user_id}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Post> votePost(@PathVariable("voteType") int voteType,@PathVariable("user_id") int user_id, @RequestBody @Valid Post post) {
+	public ResponseEntity<Post> votePost(@PathVariable("voteType") int voteType,@PathVariable("user_id") String user_id, @RequestBody @Valid Post post) {
 		if (postService.postExists(post.getId())) {
 			return new ResponseEntity<Post>(postService.votePost(voteType,user_id,post), HttpStatus.OK);
 		} else {
@@ -89,7 +89,7 @@ public class PostController {
 	}
 
 	@RequestMapping(value = "/report/byUser/{user_id}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Post> reportPost(@PathVariable("user_id") int user_id, @RequestBody @Valid Post post) {
+	public ResponseEntity<Post> reportPost(@PathVariable("user_id") String user_id, @RequestBody @Valid Post post) {
 		if (postService.postExists(post.getId())) {
 			return new ResponseEntity<Post>(postService.reportPost(user_id,post), HttpStatus.OK);
 		} else {
@@ -98,7 +98,7 @@ public class PostController {
 	}
 	
 	@RequestMapping(value = "/follow/{post_id}/byUser/{user_id}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public ResponseEntity<String> reportPost(@PathVariable("post_id") int post_id,@PathVariable("user_id") int user_id) {
+	public ResponseEntity<String> reportPost(@PathVariable("post_id") int post_id,@PathVariable("user_id") String user_id) {
 		if (postService.postExists(post_id)) {
 			postService.followPost(user_id,post_id);
 			return new ResponseEntity<String>(HttpStatus.OK);
