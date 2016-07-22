@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -98,10 +99,10 @@ public class PostController {
 		}
 	}
 	
-	@RequestMapping(value = "/follow/{post_id}/byUser/{user_id}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public ResponseEntity<String> reportPost(@PathVariable("post_id") int post_id,@PathVariable("user_id") String user_id) {
-		if (postService.postExists(post_id)) {
-			postService.followPost(user_id,post_id);
+	@RequestMapping(value = "/follow/byUser/{user_id}", method = RequestMethod.POST, consumes = "application/json")
+	public ResponseEntity<String> reportPost(@RequestBody @Valid Post post,@PathVariable("user_id") String user_id) {
+		if (postService.postExists(post.getId())) {
+			postService.followPost(user_id,post.getId());
 			return new ResponseEntity<String>(HttpStatus.OK);
 		} else {
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);

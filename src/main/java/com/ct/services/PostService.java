@@ -66,6 +66,7 @@ public class PostService {
 		DateTime dt = new DateTime(DateTimeZone.UTC);
 		postDAO.setLastEditedOn(dt.toString(ISODateTimeFormat.dateTime().withZoneUTC()));
 		if(postRepo.save(postDAO)!=null){
+			setPostObj(post, postDAO);
 			post.setLastEditedOn(postDAO.getLastEditedOn());
 		}
 		return post;
@@ -160,13 +161,16 @@ public class PostService {
 	}
 	
 	public void followPost(String user_id,int post_id){
+		//System.out.println("Inside postservice");
 		PostUserDAO userActionsDAO = postUserRepo.findByUser(user_id);
 		if (userActionsDAO != null) {
 			if(userActionsDAO.getFollowingPosts().contains(post_id))
 				userActionsDAO.getFollowingPosts().remove(Integer.valueOf(post_id));
 			else
 				userActionsDAO.getFollowingPosts().add(post_id);
+			//System.out.println("Before saving postservice if");
 			postUserRepo.save(userActionsDAO);
+			//System.out.println("After saving postservice if");
 		} else {
 			PostUserDAO userActionsDAO1 = new PostUserDAO();
 			int id = generateId();
@@ -174,7 +178,9 @@ public class PostService {
 				id = generateId();
 			userActionsDAO1.setUser(user_id);
 			userActionsDAO1.getFollowingPosts().add(post_id);
+			//System.out.println("Before saving postservice if");
 			postUserRepo.save(userActionsDAO1);
+			//System.out.println("After saving postservice if");
 		}
 	}
 	

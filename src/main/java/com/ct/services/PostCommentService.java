@@ -74,7 +74,10 @@ public class PostCommentService {
 		postCommentDAO.setCommentContent(postComment.getCommentContent());
 		DateTime dt = new DateTime(DateTimeZone.UTC);
 		postCommentDAO.setLastEditedOn(dt.toString(ISODateTimeFormat.dateTime().withZoneUTC()));
-		commentRepo.save(postCommentDAO);
+		if(commentRepo.save(postCommentDAO)!=null){
+			setCommentObj(postComment, postCommentDAO);
+			postComment.setLastEditedOn(postCommentDAO.getLastEditedOn());
+		}
 		return postComment;
 
 	}
