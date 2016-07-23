@@ -42,10 +42,19 @@ public class UserController {
 	  }
     }
 	
+	@RequestMapping(value="/user-profile/{userId}", method = RequestMethod.POST, produces="application/json", consumes= "application/json")
+	public ResponseEntity<UserDAO> updateUserSubscription(@PathVariable("userId") String userId, @RequestBody UserDAO updateUserDAO){
+		if(userService.isValid(userId))
+			return new ResponseEntity<UserDAO>(userService.updateUserSubscription(updateUserDAO, userId), HttpStatus.OK);
+		else
+			return new ResponseEntity<UserDAO>(HttpStatus.NOT_FOUND);
+	}
+	
 	@RequestMapping(value = "/login", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<User> authenticateUser() {
 		User user = userService.getAuthenticatedUser();
 		if (user != null)
+			
 			return new ResponseEntity<User>(user, HttpStatus.OK);
 		else
 			return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);

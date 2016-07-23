@@ -18,4 +18,6 @@ public interface IPostRepository extends MongoRepository<PostDAO, Integer> {
 	public PostDAO findById(Integer id);
 
 	public ArrayList<PostDAO> findTop10ByCategoryOrderByLastEditedOnDesc(String category);
+	
+	
 }

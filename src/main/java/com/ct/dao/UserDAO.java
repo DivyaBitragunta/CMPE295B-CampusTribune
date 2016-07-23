@@ -27,6 +27,22 @@ public class UserDAO {
 	private String password;
 	@Null
 	public String created_at;
+	public boolean sendNotifications;
+	public boolean sendRecommendations;
+	
+	
+	public boolean getSendNotifications() {
+		return sendNotifications;
+	}
+	public void setSendNotifications(boolean sendNotifications) {
+		this.sendNotifications = sendNotifications;
+	}
+	public boolean getSendRecommendations() {
+		return sendRecommendations;
+	}
+	public void setSendRecommendations(boolean sendRecommendations) {
+		this.sendRecommendations = sendRecommendations;
+	}
 	public String getId() {
 		return id;
 	}
