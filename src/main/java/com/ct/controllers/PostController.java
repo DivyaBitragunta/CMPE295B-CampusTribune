@@ -109,7 +109,7 @@ public class PostController {
 		}
 	}
 	
-	@RequestMapping(value = "/getUserActions/{user_id}", method = RequestMethod.GET, produces = "application/json", consumes = "application/json")
+	@RequestMapping(value = "/getUserActions/{user_id}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<PostUser> getUserActioForPosts(@PathVariable("user_id") String user_id) {
 		if (postService.userActionExists(user_id)) {
 			return new ResponseEntity<PostUser>(postService.getUserActioForPosts(user_id),HttpStatus.OK);
