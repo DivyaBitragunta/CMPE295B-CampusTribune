@@ -22,6 +22,7 @@ import com.ct.dao.EventDAO;
 import com.ct.dao.EventUserDAO;
 import com.ct.exceptions.AuthenticationException;
 import com.ct.exceptions.InvalidRequestTypeException;
+import com.ct.exceptions.RequestFailedTypeException;
 import com.ct.model.Event;
 import com.ct.model.EventComment;
 import com.ct.services.EventService;
@@ -54,14 +55,15 @@ public class EventController {
 		
 		ArrayList<Event> events = eventService.viewEvents();
 		if(events!=null){
+				System.out.println("GET EVENT LISTS REST RESPONSE ----------> Returning "+ events.size()+" events");
 				return new ResponseEntity<ArrayList<Event>>(events, HttpStatus.OK);
 		}
 		else
-			return new ResponseEntity<ArrayList<Event>>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<ArrayList<Event>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		
 	}
 	
-	@RequestMapping(value = "/{event_id}", method = RequestMethod.PUT, produces = "application/json")
+	@RequestMapping(value = "/{event_id}", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")
 	public ResponseEntity<HttpStatus> updateEvent(@PathVariable("event_id") UUID eventId,
 											@RequestBody Event event){
 		

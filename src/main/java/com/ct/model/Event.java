@@ -37,7 +37,7 @@ public class Event {
     private boolean follow;
     private boolean going;
     private boolean notGoing;
-    private boolean isReported;
+    private boolean reported;
     
     private Integer upVoteCount = new Integer(0);
 	private Integer downVoteCount = new Integer(0);
@@ -50,10 +50,12 @@ public class Event {
 	
 	@NotNull
 	private String createdBy;
+	private String updatedBy;
 	@NotNull
 	private String createdOn;
 	
 	private ArrayList<EventComment> listOfComments = new ArrayList<>();
+	private ArrayList<EventComment> listOfDeletedComments = new ArrayList<>();
 	
 	public Event(){}
 	
@@ -248,6 +250,14 @@ public class Event {
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
+	
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
 
 	public String getCreatedOn() {
 		return createdOn;
@@ -274,11 +284,11 @@ public class Event {
 	}
 	
 	public boolean isReported() {
-		return isReported;
+		return reported;
 	}
 
-	public void setReported(boolean isReported) {
-		this.isReported = isReported;
+	public void setReported(boolean reported) {
+		this.reported = reported;
 	}
 
 	public boolean isDeleteComments() {
@@ -297,4 +307,12 @@ public class Event {
 		this.listOfComments = listOfComments;
 	}
 
+	public ArrayList<EventComment> getListOfDeletedComments() {
+		return listOfDeletedComments;
+	}
+
+	public void setListOfDeletedComments(ArrayList<EventComment> listOfDeletedComments) {
+		this.listOfDeletedComments = listOfDeletedComments;
+	}
+	
 }
