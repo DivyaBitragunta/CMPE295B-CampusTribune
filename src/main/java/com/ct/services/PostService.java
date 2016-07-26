@@ -223,6 +223,7 @@ public class PostService {
 		postDAO.setWebLink(post.getWebLink());
 		postDAO.setImgURL(post.getImgURL());
 		postDAO.setReportScore(post.getReportScore());
+		postDAO.setUniversity(post.getUniversity());
 		postDAO.setCreatedOn(post.getCreatedOn());
 		postDAO.setLastEditedOn(post.getLastEditedOn());
 		return postDAO;
@@ -239,6 +240,7 @@ public class PostService {
 		post.setWebLink(postDAO.getWebLink());
 		post.setImgURL(postDAO.getImgURL());
 		post.setReportScore(postDAO.getReportScore());
+		post.setUniversity(postDAO.getUniversity());
 		post.setCreatedOn(postDAO.getCreatedOn());
 		post.setLastEditedOn(postDAO.getLastEditedOn());
 		return post;

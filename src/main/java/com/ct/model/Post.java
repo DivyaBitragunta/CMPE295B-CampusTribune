@@ -12,6 +12,7 @@ public class Post {
 	private String webLink;
 	private String imgURL;
 	private int reportScore;
+	private String university;
 	private String createdOn;
 	private String lastEditedOn;
 	/**
@@ -160,4 +161,12 @@ public class Post {
 	public void setLastEditedOn(String lastEditedOn) {
 		this.lastEditedOn = lastEditedOn;
 	}
+	public String getUniversity() {
+		return university;
+	}
+	public void setUniversity(String university) {
+		this.university = university;
+	}
+	
+	
 }
