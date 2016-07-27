@@ -27,7 +27,7 @@ public class FrontPageController {
 	@Autowired
 	private FrontPageService frontService;
 	
-	@Autowired
+	/*@Autowired
 	private PostService postService;
 	
 	@Autowired
@@ -40,6 +40,6 @@ public class FrontPageController {
 					  
 			 
 		  
-	}
+	}*/
 
 }

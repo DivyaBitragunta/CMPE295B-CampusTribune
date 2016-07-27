@@ -11,13 +11,18 @@ public class User {
 	private String lastName;
 	private String email;
 	private String token;
+	private String university;
 	private Boolean isNotifyFlag;
 	private Boolean isRecommendFlag;
 	public ArrayList<PostDAO> postList = new ArrayList();
+	public ArrayList<String> subscriptionList= new ArrayList();
 	
-	
-	
-
+	public String getUniversity() {
+		return university;
+	}
+	public void setUniversity(String university) {
+		this.university = university;
+	}
 	public String getId() {
 		return id;
 	}

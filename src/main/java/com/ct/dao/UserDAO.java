@@ -1,5 +1,7 @@
 package com.ct.dao;
 
+import java.util.ArrayList;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -27,10 +29,20 @@ public class UserDAO {
 	private String password;
 	@Null
 	public String created_at;
+	
+	public String university;
 	public boolean sendNotifications;
 	public boolean sendRecommendations;
+	@JsonProperty
+	private ArrayList<String> subscriptionList;
 	
-	
+	public ArrayList<String> getSubscriptionList() {
+		return subscriptionList;
+	}
+	@JsonProperty("subscriptionList")
+	public void setSubscriptionList(ArrayList<String> subscriptionList) {
+		this.subscriptionList = subscriptionList;
+	}
 	public boolean getSendNotifications() {
 		return sendNotifications;
 	}

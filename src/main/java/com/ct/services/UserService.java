@@ -39,6 +39,8 @@ public class UserService {
 	}
 
 	public User createUser(UserDAO newUserDAO) {
+		
+		
 		UserDAO userDAO = new UserDAO();
 		User user=new User();
 		StringBuilder str= new StringBuilder();
@@ -60,11 +62,18 @@ public class UserService {
 		userDAO.setEmail(newUserDAO.getEmail());
 		userDAO.setSendNotifications(true);
 		userDAO.setSendRecommendations(true);
+		userDAO.university= newUserDAO.university;
+		ArrayList<String> defaultSubscriptionList= new ArrayList<String>();
+		defaultSubscriptionList.add("Administration");
+		defaultSubscriptionList.add("Sports");
+		userDAO.setSubscriptionList(defaultSubscriptionList);
 		if(userDetailsRepo.save(userDAO)!=null){			
 			user.setId(userDAO.getId());
 			user.setEmail(userDAO.getEmail());
 			user.setFirstName(userDAO.getFirstName());
 			user.setLastName(userDAO.getLastName());
+			user.setUniversity(userDAO.university);
+			user.subscriptionList=userDAO.getSubscriptionList();
 			user.setToken(null);
 		}
 		mail.sendEmail(user.getEmail(), user.getId());
@@ -103,10 +112,12 @@ public class UserService {
 			user.setEmail(userDAO.getEmail());
 			user.setFirstName(userDAO.getFirstName());
 			user.setLastName(userDAO.getLastName());
+			user.setUniversity(userDAO.university);
 			user.setToken(token);
-			user.setIsNotifyFlag(true);
-			user.setIsRecommendFlag(true);
+			user.setIsNotifyFlag(userDAO.getSendNotifications());
+			user.setIsRecommendFlag(userDAO.getSendRecommendations());
 			user.setPostList((ArrayList<PostDAO>) postRepo.findAll());
+			user.subscriptionList=userDAO.getSubscriptionList();
 			return user;
 		}
 		else{
@@ -122,7 +133,8 @@ public class UserService {
 		user=userDetailsRepo.findOne(userId);
 		user.setSendNotifications(updateUserDAO.getSendNotifications());
 		user.setSendRecommendations(updateUserDAO.getSendRecommendations());
-		return user;
+		user.setSubscriptionList(updateUserDAO.getSubscriptionList());
+		return userDetailsRepo.save(user);
 	}
 
 }
