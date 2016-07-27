@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ct.algorithms.SpamFilter;
 import com.ct.model.Post;
 import com.ct.model.PostUser;
 import com.ct.services.PostService;
@@ -32,12 +33,19 @@ public class PostController {
 	@RequestMapping(value = "/create", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
 	@ResponseBody
 	public ResponseEntity<Post> createPost(@RequestBody @Valid Post post) {
-		post = postService.createPost(post);
-		if (post != null) {
-			return new ResponseEntity<Post>(post, HttpStatus.CREATED);
-		} else {
-			return new ResponseEntity<Post>(HttpStatus.CONFLICT);
+		if(SpamFilter.detectSpam(post.getHeadline())){
+			return new ResponseEntity<Post>(HttpStatus.PRECONDITION_FAILED );
+		}if(SpamFilter.detectSpam(post.getContent())){
+			return new ResponseEntity<Post>(HttpStatus.PRECONDITION_FAILED );
+		}else{
+			post = postService.createPost(post);
+			if (post != null) {
+				return new ResponseEntity<Post>(post, HttpStatus.CREATED);
+			} else {
+				return new ResponseEntity<Post>(HttpStatus.NOT_FOUND);
+			}
 		}
+		
 	}
 
 	@RequestMapping(value = "/get/{post_id}", method = RequestMethod.GET, produces = "application/json")
@@ -52,10 +60,16 @@ public class PostController {
 
 	@RequestMapping(value = "/update", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")
 	public ResponseEntity<Post> updatePost(@RequestBody @Valid Post post) {
-		if (postService.postExists(post.getId())) {
-			return new ResponseEntity<Post>(postService.updatePost(post), HttpStatus.OK);
-		} else {
-			return new ResponseEntity<Post>(HttpStatus.NOT_FOUND);
+		if(SpamFilter.detectSpam(post.getHeadline())){
+			return new ResponseEntity<Post>(HttpStatus.PRECONDITION_FAILED );
+		}if(SpamFilter.detectSpam(post.getContent())){
+			return new ResponseEntity<Post>(HttpStatus.PRECONDITION_FAILED );
+		}else{
+			if (postService.postExists(post.getId())) {
+				return new ResponseEntity<Post>(postService.updatePost(post), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<Post>(HttpStatus.NOT_FOUND);
+			}
 		}
 	}
 

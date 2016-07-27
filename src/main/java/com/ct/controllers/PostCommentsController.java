@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ct.algorithms.SpamFilter;
 import com.ct.model.PostComment;
 import com.ct.services.PostCommentService;
 import com.ct.services.PostService;
@@ -33,15 +34,19 @@ public class PostCommentsController {
 
 	@RequestMapping(value = "/create", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
 	public ResponseEntity<PostComment> createComment(@RequestBody @Valid PostComment postComment) {
-		if (postService.postExists(postComment.getPostId())) {
-			postComment = postCommentService.createComment(postComment);
-			if (postComment != null) {
-				return new ResponseEntity<PostComment>(postComment, HttpStatus.CREATED);
+		if(SpamFilter.detectSpam(postComment.getCommentContent())){
+			return new ResponseEntity<PostComment>(HttpStatus.PRECONDITION_FAILED );
+		}else{
+			if (postService.postExists(postComment.getPostId())) {
+				postComment = postCommentService.createComment(postComment);
+				if (postComment != null) {
+					return new ResponseEntity<PostComment>(postComment, HttpStatus.CREATED);
+				} else {
+					return new ResponseEntity<PostComment>(HttpStatus.CONFLICT);
+				}
 			} else {
-				return new ResponseEntity<PostComment>(HttpStatus.CONFLICT);
+				return new ResponseEntity<PostComment>(HttpStatus.NOT_FOUND);
 			}
-		} else {
-			return new ResponseEntity<PostComment>(HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -68,11 +73,16 @@ public class PostCommentsController {
 
 	@RequestMapping(value = "/update", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")
 	public ResponseEntity<PostComment> updateComment(@RequestBody @Valid PostComment postComment) {
-		if (postService.postExists(postComment.getPostId()) && postCommentService.commentExists(postComment.getId())) {
-			return new ResponseEntity<PostComment>(postCommentService.updateComment(postComment), HttpStatus.OK);
-		} else {
-			return new ResponseEntity<PostComment>(HttpStatus.NOT_FOUND);
+		if(SpamFilter.detectSpam(postComment.getCommentContent())){
+			return new ResponseEntity<PostComment>(HttpStatus.PRECONDITION_FAILED );
+		}else{
+			if (postService.postExists(postComment.getPostId()) && postCommentService.commentExists(postComment.getId())) {
+				return new ResponseEntity<PostComment>(postCommentService.updateComment(postComment), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<PostComment>(HttpStatus.NOT_FOUND);
+			}
 		}
+		
 
 	}
 

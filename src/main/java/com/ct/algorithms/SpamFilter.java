@@ -6,30 +6,32 @@ package com.ct.algorithms;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
 public class SpamFilter {
 
-	private static final String WORDS_FILE = "C:/common.txt";
-	private static final String NON_SPAM_FILE = "C:/nonspam.txt";
-	private static final String SPAM_FILE = "C:/spam.txt";
+	private static final String WORDS_FILE = "/common.txt";
+	private static final String NON_SPAM_FILE = "/nonspam.txt";
+	private static final String SPAM_FILE = "/spam.txt";
 
 	private static double spamContentCount = 0;
 	private static double nonSpamContentCount = 0;
-	private static HashMap<String, WordStats> wordStatsMap = new HashMap<String, WordStats>();
+	public static HashMap<String, WordStats> wordStatsMap = new HashMap<String, WordStats>();
 	private static ArrayList<String> allWords = new ArrayList<String>();
 	private static double totalSpamProbability = 0;
 	private static double totalNonSpamProbability = 0;
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		train();
 		if (detectSpam("Download free movie from below"))
 			System.out.println("Is spam");
 		else
 			System.out.println("Is not spam");
-	}
+	}*/
 
 	public static void train() {
 		readWords();
@@ -60,7 +62,8 @@ public class SpamFilter {
 
 	private static void readWords() {
 		try {
-			BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(WORDS_FILE)), 400000);
+			InputStream in = SpamFilter.class.getResourceAsStream(WORDS_FILE);
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in), 400000);
 			String word = bufferedReader.readLine();
 			while (word != null) {
 				if (word.trim().length() > 0)
@@ -75,7 +78,8 @@ public class SpamFilter {
 
 	private static void readCollectedNonSpamWords() {
 		try {
-			BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(NON_SPAM_FILE)), 400000);
+			InputStream in = SpamFilter.class.getResourceAsStream(NON_SPAM_FILE);
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in), 400000);
 			String nonSpamWord = bufferedReader.readLine();
 			while (nonSpamWord != null) {
 				if (nonSpamWord.trim().length() > 0) {
@@ -104,7 +108,8 @@ public class SpamFilter {
 
 	private static void readCollectedSpamWords() {
 		try {
-			BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(SPAM_FILE)), 400000);
+			InputStream in = SpamFilter.class.getResourceAsStream(SPAM_FILE);
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in), 400000);
 			String spamWord = bufferedReader.readLine();
 			while (spamWord != null) {
 				if (spamWord.trim().length() > 0) {
