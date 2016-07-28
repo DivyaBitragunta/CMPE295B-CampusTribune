@@ -15,23 +15,9 @@ public class User {
 	private String university;
 	private Boolean isNotifyFlag;
 	private Boolean isRecommendFlag;
-	public List<PostDAO> postList = new ArrayList<PostDAO>();
-	public List<String> subscriptionList= new ArrayList<String>();
+	private List<PostDAO> postList = new ArrayList<PostDAO>();
+	private List<String> subscriptionList= new ArrayList<String>();
 	private List<Event> eventList = new ArrayList<Event>();
-	
-	
-	public List<Event> getEventList() {
-		return eventList;
-	}
-	public void setEventList(ArrayList<Event> arrayList) {
-		this.eventList = arrayList;
-	}
-	public String getUniversity() {
-		return university;
-	}
-	public void setUniversity(String university) {
-		this.university = university;
-	}
 	public String getId() {
 		return id;
 	}
@@ -59,6 +45,15 @@ public class User {
 	public String getToken() {
 		return token;
 	}
+	public void setToken(String token) {
+		this.token = token;
+	}
+	public String getUniversity() {
+		return university;
+	}
+	public void setUniversity(String university) {
+		this.university = university;
+	}
 	public Boolean getIsNotifyFlag() {
 		return isNotifyFlag;
 	}
@@ -71,13 +66,27 @@ public class User {
 	public void setIsRecommendFlag(Boolean isRecommendFlag) {
 		this.isRecommendFlag = isRecommendFlag;
 	}
-	public void setToken(String token) {
-		this.token = token;
+	public List<PostDAO> getPostList() {
+		return postList;
 	}
-	public void setPostList(ArrayList<PostDAO> findAll) {
-		this.postList=findAll;
-		
+	public void setPostList(List<PostDAO> postList) {
+		this.postList = postList;
 	}
+	public List<String> getSubscriptionList() {
+		return subscriptionList;
+	}
+	public void setSubscriptionList(List<String> subscriptionList) {
+		this.subscriptionList = subscriptionList;
+	}
+	public List<Event> getEventList() {
+		return eventList;
+	}
+	public void setEventList(List<Event> eventList) {
+		this.eventList = eventList;
+	}
+	
+	
+	
 	
 	
 	

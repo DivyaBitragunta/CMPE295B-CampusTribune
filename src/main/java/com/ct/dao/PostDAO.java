@@ -201,13 +201,17 @@ public class PostDAO {
 		this.lastEditedOn = lastEditedOn;
 	}
 
-	public String getUniversity() {
-		return university;
-	}
 
 	public void setUniversity(String university) {
 		this.university = university;
 	}
+	
+
+	public String getUniversity() {
+		return university;
+	}
+
+
 	
 	
 }

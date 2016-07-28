@@ -66,12 +66,12 @@ public class UserService {
 		userDAO.setFirstName(newUserDAO.getFirstName());
 		userDAO.setLastName(newUserDAO.getLastName());
 		DateTime dt = new DateTime(DateTimeZone.UTC);		
-		userDAO.created_at =  dt.toString(ISODateTimeFormat.dateTime().withZoneUTC());
+		userDAO.setCreated_at(dt.toString(ISODateTimeFormat.dateTime().withZoneUTC()));
 		userDAO.setPassword(newUserDAO.getPassword()); 
 		userDAO.setEmail(newUserDAO.getEmail());
 		userDAO.setSendNotifications(true);
 		userDAO.setSendRecommendations(true);
-		userDAO.university= newUserDAO.university;
+		userDAO.setUniversity(newUserDAO.getUniversity());
 		ArrayList<String> defaultSubscriptionList= new ArrayList<String>();
 		defaultSubscriptionList.add("Administration");
 		defaultSubscriptionList.add("Sports");
@@ -81,8 +81,8 @@ public class UserService {
 			user.setEmail(userDAO.getEmail());
 			user.setFirstName(userDAO.getFirstName());
 			user.setLastName(userDAO.getLastName());
-			user.setUniversity(userDAO.university);
-			user.subscriptionList=userDAO.getSubscriptionList();
+			user.setUniversity(userDAO.getUniversity());
+			user.setSubscriptionList(userDAO.getSubscriptionList());
 			user.setToken(null);
 		}
 		mail.sendEmail(user.getEmail(), user.getId());
@@ -121,13 +121,13 @@ public class UserService {
 			user.setEmail(userDAO.getEmail());
 			user.setFirstName(userDAO.getFirstName());
 			user.setLastName(userDAO.getLastName());
-			user.setUniversity(userDAO.university);
+			user.setUniversity(userDAO.getUniversity());
 			user.setToken(token);
-			user.setIsNotifyFlag(userDAO.getSendNotifications());
-			user.setIsRecommendFlag(userDAO.getSendRecommendations());
-			user.setPostList((ArrayList<PostDAO>) postRepo.findAll());
+			user.setIsNotifyFlag(userDAO.isSendNotifications());
+			user.setIsRecommendFlag(userDAO.isSendRecommendations());
+			user.setPostList((ArrayList<PostDAO>) postRepo.findByUniversity(userDAO.getUniversity()));
 			user.setEventList((ArrayList<Event>) eventService.viewEvents());
-			user.subscriptionList=userDAO.getSubscriptionList();
+			user.setSubscriptionList(userDAO.getSubscriptionList());
 			return user;
 		}
 		else{
@@ -141,8 +141,8 @@ public class UserService {
 		UserDAO user=new UserDAO();
 		System.out.println("In update user SUBSCRIPTION");
 		user=userDetailsRepo.findOne(userId);
-		user.setSendNotifications(updateUserDAO.getSendNotifications());
-		user.setSendRecommendations(updateUserDAO.getSendRecommendations());
+		user.setSendNotifications(updateUserDAO.isSendNotifications());
+		user.setSendRecommendations(updateUserDAO.isSendRecommendations());
 		user.setSubscriptionList(updateUserDAO.getSubscriptionList());
 		return userDetailsRepo.save(user);
 	}
