@@ -17,16 +17,16 @@ public interface IPostRepository extends MongoRepository<PostDAO, Integer> {
 
 	public PostDAO findById(Integer id);
 
-<<<<<<< Updated upstream
+
 	public ArrayList<PostDAO> findByCategoryAndUniversityOrderByLastEditedOnDesc(String category,String university);
 	
 	public ArrayList<PostDAO> findByCategory(String category);
 	public ArrayList<PostDAO> findByCategoryAndUniversity(String category,String university);
-=======
+
 	public ArrayList<PostDAO> findTop10ByCategoryOrderByLastEditedOnDesc(String category);
 
 	public ArrayList<PostDAO> findByUniversity(String university);
->>>>>>> Stashed changes
+
 	
 	
 }
