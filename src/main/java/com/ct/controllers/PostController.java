@@ -83,9 +83,9 @@ public class PostController {
 		}
 	}
 
-	@RequestMapping(value = "/getByCategory/{category}", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<ArrayList<Post>> getPostsForCategory(@PathVariable String category) {
-		ArrayList<Post> posts = postService.getPostsForCategory(category);
+	@RequestMapping(value = "/getByCategory/{category}/{university}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<ArrayList<Post>> getPostsForCategory(@PathVariable String category,@PathVariable String university) {
+		ArrayList<Post> posts = postService.getPostsForCategory(category,university);
 		if (posts != null && posts.size() > 0) {
 			return new ResponseEntity<ArrayList<Post>>(posts, HttpStatus.OK);
 		} else {

@@ -79,10 +79,13 @@ public class PostService {
 
 	}
 
-	public ArrayList<Post> getPostsForCategory(String category) {
+	public ArrayList<Post> getPostsForCategory(String category,String university) {
 		ArrayList<Post> posts = new ArrayList<Post>();
 		ArrayList<PostDAO> postDAOs = new ArrayList<PostDAO>();
-		postDAOs = postRepo.findTop10ByCategoryOrderByLastEditedOnDesc(category);
+		postDAOs = postRepo.findByCategoryAndUniversityOrderByLastEditedOnDesc(category,university);
+		//postDAOs = postRepo.findByCategoryAndUniversity(category,university);
+		System.out.println("postDao sizeeee....."+postDAOs.size() );
+		//postDAOs = (ArrayList<PostDAO>)postRepo.findAll();
 		for (PostDAO postDAO : postDAOs) {
 			Post post = new Post();
 			post = setPostObj(post, postDAO);
