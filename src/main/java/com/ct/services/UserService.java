@@ -11,10 +11,13 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ct.dao.EventDAO;
 import com.ct.dao.PostDAO;
 import com.ct.dao.UserDAO;
 import com.ct.mail.Mail;
+import com.ct.model.Event;
 import com.ct.model.User;
+import com.ct.repositories.IEventRepository;
 import com.ct.repositories.IPostRepository;
 import com.ct.repositories.IUserDetailsRepository;
 import com.ct.security.AuthHelper;
@@ -27,9 +30,15 @@ public class UserService {
 	
 	@Autowired
 	private IPostRepository postRepo;
+	
+	@Autowired
+	private IEventRepository eventRepo;
 
 	@Autowired
 	private AuthHelper authHelper;
+	
+	@Autowired
+	private EventService eventService;
 
 	Mail mail= new Mail();
 
@@ -117,6 +126,7 @@ public class UserService {
 			user.setIsNotifyFlag(userDAO.getSendNotifications());
 			user.setIsRecommendFlag(userDAO.getSendRecommendations());
 			user.setPostList((ArrayList<PostDAO>) postRepo.findAll());
+			user.setEventList((ArrayList<Event>) eventService.viewEvents());
 			user.subscriptionList=userDAO.getSubscriptionList();
 			return user;
 		}

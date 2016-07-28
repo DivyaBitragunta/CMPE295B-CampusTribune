@@ -1,5 +1,6 @@
 package com.ct.model;
 
+import com.ct.dao.EventDAO;
 import com.ct.dao.PostDAO;
 
 import java.util.ArrayList;
@@ -14,9 +15,17 @@ public class User {
 	private String university;
 	private Boolean isNotifyFlag;
 	private Boolean isRecommendFlag;
-	public ArrayList<PostDAO> postList = new ArrayList();
-	public ArrayList<String> subscriptionList= new ArrayList();
+	public List<PostDAO> postList = new ArrayList<PostDAO>();
+	public List<String> subscriptionList= new ArrayList<String>();
+	private List<Event> eventList = new ArrayList<Event>();
 	
+	
+	public List<Event> getEventList() {
+		return eventList;
+	}
+	public void setEventList(ArrayList<Event> arrayList) {
+		this.eventList = arrayList;
+	}
 	public String getUniversity() {
 		return university;
 	}
