@@ -12,4 +12,5 @@ import com.ct.dao.EventDAO;
 @Service
 public interface IEventRepository extends MongoRepository<EventDAO, UUID> {
 	public List<EventDAO> findFirst10ByOrderByCreatedOnDesc();
+	public List<EventDAO> findFirst10ByUniversityOrderByLastUpdatedOnDesc(String university);
 }

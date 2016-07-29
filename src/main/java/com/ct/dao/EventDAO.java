@@ -29,6 +29,7 @@ public class EventDAO {
 	private Double longitude = new Double(0);
 	private String address;
 	private String eventImageS3URL;
+	private String university;
 	
 	private Integer upVoteCount = new Integer(0);
 	private Integer downVoteCount = new Integer(0);
@@ -174,8 +175,15 @@ public class EventDAO {
 	public void setEventImageS3URL(String eventImageS3URL) {
 		this.eventImageS3URL = eventImageS3URL;
 	}
+	
 
+	public String getUniversity() {
+		return university;
+	}
 
+	public void setUniversity(String university) {
+		this.university = university;
+	}
 
 	public Integer getUpVoteCount() {
 		return upVoteCount;
@@ -292,8 +300,11 @@ public class EventDAO {
 				", latitude= "+latitude.doubleValue()+", longitude= "+longitude.doubleValue()+", address= "+address+
 				", image S3 URL= "+eventImageS3URL+", upvote count= "+upVoteCount.intValue()+", downVote count= "+downVoteCount.intValue()+
 				", Going= "+ goingCount+", Not Going= "+notGoingCount+", isReported= "+isReported+", report count= "+reportCount.intValue()+
-				", created by= "+createdBy+", created on= "+createdOn+", last updated on= "+lastUpdatedOn+"]";
+				", created by= "+createdBy+", created on= "+createdOn+", last updated on= "+lastUpdatedOn+
+				", university= "+university+"]";
 	}
+
+
 
 	@Override
 	public int hashCode() {
@@ -317,10 +328,13 @@ public class EventDAO {
 		result = prime * result + ((reportCount == null) ? 0 : reportCount.hashCode());
 		result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
+		result = prime * result + ((university == null) ? 0 : university.hashCode());
 		result = prime * result + ((upVoteCount == null) ? 0 : upVoteCount.hashCode());
 		result = prime * result + ((url == null) ? 0 : url.hashCode());
 		return result;
 	}
+
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -417,6 +431,11 @@ public class EventDAO {
 			if (other.title != null)
 				return false;
 		} else if (!title.equals(other.title))
+			return false;
+		if (university == null) {
+			if (other.university != null)
+				return false;
+		} else if (!university.equals(other.university))
 			return false;
 		if (upVoteCount == null) {
 			if (other.upVoteCount != null)

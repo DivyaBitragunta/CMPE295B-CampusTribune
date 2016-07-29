@@ -126,7 +126,7 @@ public class UserService {
 			user.setIsNotifyFlag(userDAO.isSendNotifications());
 			user.setIsRecommendFlag(userDAO.isSendRecommendations());
 			user.setPostList((ArrayList<PostDAO>) postRepo.findByUniversity(userDAO.getUniversity()));
-			user.setEventList((ArrayList<Event>) eventService.viewEvents());
+			user.setEventList((ArrayList<Event>) eventService.viewEvents(userDAO.getUniversity()));
 			user.setSubscriptionList(userDAO.getSubscriptionList());
 			return user;
 		}

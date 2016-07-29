@@ -53,6 +53,7 @@ public class EventService {
 		eventDAO.setLongitude(event.getLongitude());
 		eventDAO.setAddress(event.getAddress());
 		eventDAO.setEventImageS3URL(event.getEventImageS3URL());
+		eventDAO.setUniversity(event.getUniversity());
 		eventDAO.setCreatedBy(event.getCreatedBy());
 		eventDAO.setCreatedOn(event.getCreatedOn());
 		DateTime dt = new DateTime(DateTimeZone.UTC);		
@@ -90,15 +91,15 @@ public class EventService {
 		return event;
 	}
 	
-	public ArrayList<Event> viewEvents(){
+	public ArrayList<Event> viewEvents(String university){
 		List<EventDAO> events = new ArrayList<>();
-		events = eventRepository.findFirst10ByOrderByCreatedOnDesc();
+		events = eventRepository.findFirst10ByUniversityOrderByLastUpdatedOnDesc(university);
 		if(events.size()>0){
 			ArrayList<Event> listOfEvents = new ArrayList<>(events.size());
 			for(EventDAO each: events){
 				Event eachEvent = new Event(each.getId(), each.getTitle(), each.getCategory(),
 						each.getDescription(), each.getUrl(), each.getStartDate(), each.getEndDate(),
-						each.getLatitude(), each.getLongitude(), each.getAddress(), each.getEventImageS3URL(),
+						each.getLatitude(), each.getLongitude(), each.getAddress(), each.getEventImageS3URL(), each.getUniversity(),
 						each.getUpVoteCount(), each.getDownVoteCount(), each.getGoingCount(), each.getNotGoingCount(),
 						each.getCreatedBy(), each.getCreatedOn());
 				eachEvent.setListOfComments(getAllComments(eachEvent));

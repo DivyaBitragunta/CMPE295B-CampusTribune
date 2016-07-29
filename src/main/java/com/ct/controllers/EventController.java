@@ -50,10 +50,10 @@ public class EventController {
 			return new ResponseEntity<Event>(event, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	@RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<ArrayList<Event>> viewEvents(){
+	@RequestMapping(value = "/{university_name}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<ArrayList<Event>> viewEvents(@PathVariable("university_name") String university){
 		
-		ArrayList<Event> events = eventService.viewEvents();
+		ArrayList<Event> events = eventService.viewEvents(university);
 		if(events!=null){
 				System.out.println("GET EVENT LISTS REST RESPONSE ----------> Returning "+ events.size()+" events");
 				return new ResponseEntity<ArrayList<Event>>(events, HttpStatus.OK);

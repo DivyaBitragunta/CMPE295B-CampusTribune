@@ -31,6 +31,7 @@ public class Event {
 	@NotNull
 	private String address;
 	private String eventImageS3URL;
+	private String university;
 	
 	private boolean upvoted;
     private boolean downvoted;
@@ -60,7 +61,7 @@ public class Event {
 	public Event(){}
 	
 	public Event(UUID id, String title, String category, String description, String url, String startDate,
-			String endDate, Double latitude, Double longitude, String address, String eventImageS3URL,
+			String endDate, Double latitude, Double longitude, String address, String eventImageS3URL, String university,
 			Integer upVoteCount, Integer downVoteCount, Integer goingCount, Integer notGoingCount, String createdBy,
 			String createdOn) {
 		super();
@@ -75,6 +76,7 @@ public class Event {
 		this.longitude = longitude;
 		this.address = address;
 		this.eventImageS3URL = eventImageS3URL;
+		this.university = university;
 		this.upVoteCount = upVoteCount;
 		this.downVoteCount = downVoteCount;
 		this.goingCount = goingCount;
@@ -169,6 +171,14 @@ public class Event {
 
 	public void setEventImageS3URL(String eventImageS3URL) {
 		this.eventImageS3URL = eventImageS3URL;
+	}
+	
+	public String getUniversity() {
+		return university;
+	}
+
+	public void setUniversity(String university) {
+		this.university = university;
 	}
 
 	public boolean isUpvoted() {
