@@ -18,6 +18,7 @@ public class PostDAO {
 	private String imgURL;
 	private int reportScore;
 	private String university;
+	private int followCount;
 	private String createdOn;
 	private String lastEditedOn;
 
@@ -211,7 +212,11 @@ public class PostDAO {
 		return university;
 	}
 
+	public int getFollowCount() {
+		return followCount;
+	}
 
-	
-	
+	public void setFollowCount(int followCount) {
+		this.followCount = followCount;
+	}
 }

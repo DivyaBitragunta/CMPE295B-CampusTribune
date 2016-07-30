@@ -164,26 +164,25 @@ public class PostService {
 	}
 	
 	public void followPost(String user_id,int post_id){
-		//System.out.println("Inside postservice");
 		PostUserDAO userActionsDAO = postUserRepo.findByUser(user_id);
+		PostDAO postDAO = postRepo.findById(post_id);
 		if (userActionsDAO != null) {
-			if(userActionsDAO.getFollowingPosts().contains(post_id))
+			if(userActionsDAO.getFollowingPosts().contains(post_id)){
 				userActionsDAO.getFollowingPosts().remove(Integer.valueOf(post_id));
-			else
+				postDAO.setFollowCount(postDAO.getFollowCount()-1);
+			}else{
 				userActionsDAO.getFollowingPosts().add(post_id);
-			//System.out.println("Before saving postservice if");
-			postUserRepo.save(userActionsDAO);
-			//System.out.println("After saving postservice if");
+				postDAO.setFollowCount(postDAO.getFollowCount()+1);
+			}
+	    	postUserRepo.save(userActionsDAO);
+			postRepo.save(postDAO);
 		} else {
 			PostUserDAO userActionsDAO1 = new PostUserDAO();
-			int id = generateId();
-			while (postRepo.exists(id))
-				id = generateId();
 			userActionsDAO1.setUser(user_id);
 			userActionsDAO1.getFollowingPosts().add(post_id);
-			//System.out.println("Before saving postservice if");
+			postDAO.setFollowCount(postDAO.getFollowCount()+1);
 			postUserRepo.save(userActionsDAO1);
-			//System.out.println("After saving postservice if");
+			postRepo.save(postDAO);
 		}
 	}
 	
@@ -227,6 +226,7 @@ public class PostService {
 		postDAO.setImgURL(post.getImgURL());
 		postDAO.setReportScore(post.getReportScore());
 		postDAO.setUniversity(post.getUniversity());
+		postDAO.setFollowCount(post.getFollowCount());
 		postDAO.setCreatedOn(post.getCreatedOn());
 		postDAO.setLastEditedOn(post.getLastEditedOn());
 		return postDAO;
@@ -244,6 +244,7 @@ public class PostService {
 		post.setImgURL(postDAO.getImgURL());
 		post.setReportScore(postDAO.getReportScore());
 		post.setUniversity(postDAO.getUniversity());
+		post.setFollowCount(postDAO.getFollowCount());
 		post.setCreatedOn(postDAO.getCreatedOn());
 		post.setLastEditedOn(postDAO.getLastEditedOn());
 		return post;
