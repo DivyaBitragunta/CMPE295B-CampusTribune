@@ -100,9 +100,11 @@ public class EventService {
 				Event eachEvent = new Event(each.getId(), each.getTitle(), each.getCategory(),
 						each.getDescription(), each.getUrl(), each.getStartDate(), each.getEndDate(),
 						each.getLatitude(), each.getLongitude(), each.getAddress(), each.getEventImageS3URL(), each.getUniversity(),
-						each.getUpVoteCount(), each.getDownVoteCount(), each.getGoingCount(), each.getNotGoingCount(),
+						each.getUpVoteCount(), each.getDownVoteCount(), each.getGoingCount(), each.getNotGoingCount(), each.getFollowCount(),
 						each.getCreatedBy(), each.getCreatedOn());
-				eachEvent.setListOfComments(getAllComments(eachEvent));
+				ArrayList<EventComment> listOfComments = getAllComments(eachEvent);
+				if(listOfComments!=null)
+					eachEvent.setListOfComments(listOfComments);
 				listOfEvents.add(eachEvent);
 			}
 			return listOfEvents;
@@ -363,32 +365,44 @@ public class EventService {
 		return eventDAO;
 	}
 	
-	public EventUserDAO followEvent(Event event){
-		EventUserDAO eventUserDAO = new EventUserDAO();
-		if(event.getCreatedBy()==null || event.getId()==null)
-			return null;
+	public EventDAO followEvent(Event event){
 		
-		if(event.getUpdatedBy()!=null && !event.getUpdatedBy().isEmpty())
-			eventUserDAO = eventUserRepository.findOne(event.getUpdatedBy());
-		else
-			eventUserDAO = eventUserRepository.findOne(event.getCreatedBy());
+		EventDAO eventDAO = new EventDAO();
+		if(event!=null){
+			if(event.getId()==null || event.getCreatedBy()==null)
+				return null;
+			eventDAO = eventRepository.findOne(event.getId());
+			if(eventDAO==null)
+				return null;
+			eventDAO.setFollowCount(eventDAO.getFollowCount()+1);
+			eventRepository.save(eventDAO);
 		
-		List<UUID> listOfFollowingEvents = new ArrayList<>();
-		if(eventUserDAO==null){
-			eventUserDAO = new EventUserDAO();
+			EventUserDAO eventUserDAO = new EventUserDAO();
+			if(event.getCreatedBy()==null || event.getId()==null)
+				return null;
+			
 			if(event.getUpdatedBy()!=null && !event.getUpdatedBy().isEmpty())
-				eventUserDAO.setUserName(event.getUpdatedBy());
+				eventUserDAO = eventUserRepository.findOne(event.getUpdatedBy());
 			else
-				eventUserDAO.setUserName(event.getCreatedBy());
+				eventUserDAO = eventUserRepository.findOne(event.getCreatedBy());
+			
+			List<UUID> listOfFollowingEvents = new ArrayList<>();
+			if(eventUserDAO==null){
+				eventUserDAO = new EventUserDAO();
+				if(event.getUpdatedBy()!=null && !event.getUpdatedBy().isEmpty())
+					eventUserDAO.setUserName(event.getUpdatedBy());
+				else
+					eventUserDAO.setUserName(event.getCreatedBy());
+			}
+			else
+				listOfFollowingEvents = eventUserDAO.getFollowingEvents();
+			listOfFollowingEvents.add(event.getId());
+			eventUserDAO.setFollowingEvents(listOfFollowingEvents);
+			DateTime today = new DateTime(DateTimeZone.UTC);
+			eventUserDAO.setLastUpdatedOn(today.toString(ISODateTimeFormat.dateTime().withZoneUTC()));
+			eventUserRepository.save(eventUserDAO);
 		}
-		else
-			listOfFollowingEvents = eventUserDAO.getFollowingEvents();
-		listOfFollowingEvents.add(event.getId());
-		eventUserDAO.setFollowingEvents(listOfFollowingEvents);
-		DateTime today = new DateTime(DateTimeZone.UTC);
-		eventUserDAO.setLastUpdatedOn(today.toString(ISODateTimeFormat.dateTime().withZoneUTC()));
-		eventUserRepository.save(eventUserDAO);
-		return eventUserDAO;
+		return eventDAO;
 	}
 	
 	public EventUserDAO unfollowEvent(Event event){

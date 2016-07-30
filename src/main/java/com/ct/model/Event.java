@@ -44,6 +44,7 @@ public class Event {
 	private Integer downVoteCount = new Integer(0);
 	private Integer goingCount = new Integer(0);
 	private Integer notGoingCount = new Integer(0);
+	private Integer followCount = new Integer(0);
 	
 	private boolean updateEvent;
 	private boolean updateComments;
@@ -62,8 +63,8 @@ public class Event {
 	
 	public Event(UUID id, String title, String category, String description, String url, String startDate,
 			String endDate, Double latitude, Double longitude, String address, String eventImageS3URL, String university,
-			Integer upVoteCount, Integer downVoteCount, Integer goingCount, Integer notGoingCount, String createdBy,
-			String createdOn) {
+			Integer upVoteCount, Integer downVoteCount, Integer goingCount, Integer notGoingCount, Integer followCount,
+			String createdBy, String createdOn) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -81,6 +82,7 @@ public class Event {
 		this.downVoteCount = downVoteCount;
 		this.goingCount = goingCount;
 		this.notGoingCount = notGoingCount;
+		this.followCount = followCount;
 		this.createdBy = createdBy;
 		this.createdOn = createdOn;
 	}
@@ -251,6 +253,14 @@ public class Event {
 
 	public void setNotGoingCount(Integer notGoingCount) {
 		this.notGoingCount = notGoingCount;
+	}
+	
+	public Integer getFollowCount() {
+		return followCount;
+	}
+
+	public void setFollowCount(Integer followCount) {
+		this.followCount = followCount;
 	}
 
 	public String getCreatedBy() {

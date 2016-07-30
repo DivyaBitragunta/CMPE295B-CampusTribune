@@ -35,6 +35,7 @@ public class EventDAO {
 	private Integer downVoteCount = new Integer(0);
 	private Integer goingCount = new Integer(0);
 	private Integer notGoingCount = new Integer(0);
+	private Integer followCount = new Integer(0);
 	private boolean isReported;
 	private Integer reportCount = new Integer(0);
 	
@@ -233,6 +234,18 @@ public class EventDAO {
 
 
 
+	public Integer getFollowCount() {
+		return followCount;
+	}
+
+
+
+	public void setFollowCount(Integer followCount) {
+		this.followCount = followCount;
+	}
+
+
+
 	public boolean isReported() {
 		return isReported;
 	}
@@ -299,7 +312,7 @@ public class EventDAO {
 		return "EventDAO [id= "+id+", title= "+title+", category= "+category+", description= "+ description+", url= "+url+", startDate= "+startDate+", endDate= "+endDate+
 				", latitude= "+latitude.doubleValue()+", longitude= "+longitude.doubleValue()+", address= "+address+
 				", image S3 URL= "+eventImageS3URL+", upvote count= "+upVoteCount.intValue()+", downVote count= "+downVoteCount.intValue()+
-				", Going= "+ goingCount+", Not Going= "+notGoingCount+", isReported= "+isReported+", report count= "+reportCount.intValue()+
+				", Going= "+ goingCount+", Not Going= "+notGoingCount+", Follow Count= "+ followCount+", isReported= "+isReported+", report count= "+reportCount.intValue()+
 				", created by= "+createdBy+", created on= "+createdOn+", last updated on= "+lastUpdatedOn+
 				", university= "+university+"]";
 	}
@@ -318,6 +331,7 @@ public class EventDAO {
 		result = prime * result + ((downVoteCount == null) ? 0 : downVoteCount.hashCode());
 		result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
 		result = prime * result + ((eventImageS3URL == null) ? 0 : eventImageS3URL.hashCode());
+		result = prime * result + ((followCount == null) ? 0 : followCount.hashCode());
 		result = prime * result + ((goingCount == null) ? 0 : goingCount.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + (isReported ? 1231 : 1237);
@@ -385,6 +399,11 @@ public class EventDAO {
 				return false;
 		} else if (!eventImageS3URL.equals(other.eventImageS3URL))
 			return false;
+		if (followCount == null) {
+			if (other.followCount != null)
+				return false;
+		} else if (!followCount.equals(other.followCount))
+			return false;
 		if (goingCount == null) {
 			if (other.goingCount != null)
 				return false;
@@ -449,4 +468,5 @@ public class EventDAO {
 			return false;
 		return true;
 	}
+	
 }
