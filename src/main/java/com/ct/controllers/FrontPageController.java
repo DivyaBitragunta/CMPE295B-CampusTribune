@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ct.dao.PostDAO;
+import com.ct.model.Event;
 import com.ct.model.Post;
-import com.ct.services.FrontPageService;
+import com.ct.services.FrontPageEventService;
+import com.ct.services.FrontPagePostService;
 import com.ct.services.PostService;
 import com.ct.services.UserService;
 
@@ -25,21 +27,33 @@ import flexjson.JSONSerializer;
 public class FrontPageController {
 	
 	@Autowired
-	private FrontPageService frontService;
+	private FrontPagePostService frontPostService;
 	
-	/*@Autowired
+	@Autowired
+	private FrontPageEventService frontEventService;
+	
+	@Autowired
 	private PostService postService;
 	
 	@Autowired
 	private UserService userService;
 
-	@RequestMapping(value="/data/{userId}", method = RequestMethod.GET, produces ="application/json")
-	public ResponseEntity<ArrayList<PostDAO>> getFrontPageData(@PathVariable String userId) {
-			System.out.println("Reached front page controller!");
-			return new ResponseEntity<ArrayList<PostDAO>>(frontService.getfrontPageData(userId), HttpStatus.OK);		  
+	@RequestMapping(value="/post/{userId}", method = RequestMethod.GET, produces ="application/json")
+	public ResponseEntity<ArrayList<PostDAO>> getFrontPagePostData(@PathVariable String userId) {
+			System.out.println("Reached front post page controller!");
+			return new ResponseEntity<ArrayList<PostDAO>>((ArrayList<PostDAO>) frontPostService.getfrontPagePostData(userId), HttpStatus.OK);		  
 					  
 			 
 		  
-	}*/
+	}
+	
+	@RequestMapping(value="/event/{userId}", method = RequestMethod.GET, produces ="application/json")
+	public ResponseEntity<ArrayList<Event>> getFrontPageEventData(@PathVariable String userId) {
+			System.out.println("Reached front event page controller!");
+			return new ResponseEntity<ArrayList<Event>>((ArrayList<Event>) frontEventService.getfrontPageEventData(userId), HttpStatus.OK);		  
+					  
+			 
+		  
+	}
 
 }

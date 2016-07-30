@@ -8,9 +8,12 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
 import com.ct.dao.EventDAO;
+import com.ct.dao.PostDAO;
+import com.ct.model.Event;
 
 @Service
 public interface IEventRepository extends MongoRepository<EventDAO, UUID> {
 	public List<EventDAO> findFirst10ByOrderByCreatedOnDesc();
 	public List<EventDAO> findFirst10ByUniversityOrderByLastUpdatedOnDesc(String university);
+	public List<EventDAO> findTop10ByCategoryAndUniversityOrderByStartDateDesc(String category, String university);
 }

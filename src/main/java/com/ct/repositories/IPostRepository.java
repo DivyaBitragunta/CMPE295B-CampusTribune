@@ -4,6 +4,7 @@
 package com.ct.repositories;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -26,6 +27,13 @@ public interface IPostRepository extends MongoRepository<PostDAO, Integer> {
 	public ArrayList<PostDAO> findTop10ByCategoryOrderByLastEditedOnDesc(String category);
 
 	public ArrayList<PostDAO> findByUniversity(String university);
+
+
+	public List<PostDAO> findTop10ByCategoryAndUniversity(String category, String university);
+
+
+	public List<PostDAO> findTop10ByCategoryAndUniversityOrderByLastEditedOnDesc(
+			String category, String university);
 
 	
 	

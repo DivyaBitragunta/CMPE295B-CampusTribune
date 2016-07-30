@@ -59,5 +59,13 @@ public class UserController {
 		else
 			return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
 	}
+	
+	/*@RequestMapping(value="/logout", method = RequestMethod.GET)
+	public ResponseEntity<User> logoutUser () {
+	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    if (auth != null){    
+	        new SecurityContextLogoutHandler().logout(request, response, auth);
+	    }
+	}*/
 
 }
