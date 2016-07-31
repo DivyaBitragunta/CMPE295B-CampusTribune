@@ -39,7 +39,17 @@ public class FrontPagePostService {
 			}
 				
 		}
-		
+		List<PostDAO> listOfAlerts= new ArrayList<PostDAO>();
+		try{
+			listOfAlerts= postRepo.findTop3ByIsAlertOrderByCreatedOnDesc();
+		}catch (Exception e){
+			System.out.println("No Alerts in the repo!");
+		}
+		if(listOfAlerts!=null){
+			for(PostDAO alert:listOfAlerts){
+				postlist.add(alert);
+			}
+		}	
 		
 		return postlist;
 	}

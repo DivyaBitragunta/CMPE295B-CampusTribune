@@ -41,9 +41,7 @@ public class FrontPageController {
 	@RequestMapping(value="/post/{userId}", method = RequestMethod.GET, produces ="application/json")
 	public ResponseEntity<ArrayList<PostDAO>> getFrontPagePostData(@PathVariable String userId) {
 			System.out.println("Reached front post page controller!");
-			return new ResponseEntity<ArrayList<PostDAO>>((ArrayList<PostDAO>) frontPostService.getfrontPagePostData(userId), HttpStatus.OK);		  
-					  
-			 
+			return new ResponseEntity<ArrayList<PostDAO>>((ArrayList<PostDAO>) frontPostService.getfrontPagePostData(userId), HttpStatus.OK);		  	 
 		  
 	}
 	

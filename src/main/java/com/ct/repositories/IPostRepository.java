@@ -35,6 +35,11 @@ public interface IPostRepository extends MongoRepository<PostDAO, Integer> {
 	public List<PostDAO> findTop10ByCategoryAndUniversityOrderByLastEditedOnDesc(
 			String category, String university);
 
+
+	public List<PostDAO> findTop3ByIsAlertOrderByCreatedOnDesc();
+
+
+
 	
 	
 }
