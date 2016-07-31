@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ct.algorithms.SpamFilter;
 import com.ct.model.Post;
 import com.ct.model.PostUser;
+import com.ct.notifications.NotificationSystem;
 import com.ct.services.PostService;
 
 @RestController
@@ -66,8 +67,17 @@ public class PostController {
 			return new ResponseEntity<Post>(HttpStatus.PRECONDITION_FAILED );
 		}else{
 			if (postService.postExists(post.getId())) {
-				return new ResponseEntity<Post>(postService.updatePost(post), HttpStatus.OK);
-			} else {
+				Post postRet = new Post();
+				postRet=postService.updatePost(post);
+				String str[]=new String[2];
+				String msg  = postRet.getHeadline()+" is updated";
+	            str[0]=msg;
+				NotificationSystem ns = new NotificationSystem();
+				ns.sendNotifications(str);
+				System.out.println("Notification sent");
+				return new ResponseEntity<Post>(postRet, HttpStatus.OK);
+			}
+			else {
 				return new ResponseEntity<Post>(HttpStatus.NOT_FOUND);
 			}
 		}
