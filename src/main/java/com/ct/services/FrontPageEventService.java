@@ -39,29 +39,58 @@ public class FrontPageEventService {
 		UserDAO user = userRepo.findById(userId);
 		ArrayList<String>  userSubscription = user.getSubscriptionList();
 		for(String category : userSubscription) {
-			List<EventDAO> top2Posts = findTopEventsForCategory(category,user.getUniversity());
+			List<EventDAO> topEvents = findTopEventsForCategory(category,user.getUniversity());
+			for(EventDAO eventDAO:topEvents){
+				Event event=new Event();
+				//convert event dao to event
+				eventlist.add(event);
+			}
 		}
 		return eventlist;
 	}
 
 	public List<EventDAO> findTopEventsForCategory(String category, String university) {
 		
-		HashMap<UUID, Integer> postsScoreMap = new HashMap<UUID, Integer>();
-		//Accumulate most recent posts based on last edited on
-		//Will change to Top100 once data set up is done
 		List<EventDAO> listOfEvents =eventRepo.findTop10ByCategoryAndUniversityOrderByStartDateDesc(category,university);
-
+		int[] scoreArray = new int[listOfEvents.size()];
+		int listIndex = 0;
 		for(EventDAO event:listOfEvents){
 			int voteScore = findVoteScore(event.getId());
 			int commentScore = findCommentScore(event.getId());
 			int followScore = event.getFollowCount();
 			int age = findAgeOfEvent(event.getId());
 			int numberOfPeopleGoing = event.getGoingCount();
-			int cumulativeScore=age-voteScore+commentScore+followScore+numberOfPeopleGoing;
-			postsScoreMap.put(event.getId(), cumulativeScore);
+			int cumulativeScore=voteScore+commentScore+followScore+numberOfPeopleGoing-age;
+			scoreArray[listIndex++] = cumulativeScore;
 		}
 		
-		return listOfEvents;
+		return  getTop4(listOfEvents, scoreArray);
+	}
+
+	private List<EventDAO> getTop4(List<EventDAO> listOfEvents, int[] scoreArray) {
+		List<EventDAO> topEvents = new ArrayList<EventDAO>();
+		if(listOfEvents.size()<4){
+			return listOfEvents;
+		}
+		for (int i = 0; i < 4; i++) {
+			int highScore = Integer.MIN_VALUE;
+			int highScoreIndex = i;
+			for (int j = i; j < scoreArray.length; j++) {
+				if (scoreArray[j] > highScore) {
+					highScore = scoreArray[j];
+					highScoreIndex = j;
+				}
+			}
+			int temp = scoreArray[i];
+			scoreArray[i] = highScore;
+			scoreArray[highScoreIndex] = temp;
+			topEvents.add(listOfEvents.get(highScoreIndex));
+			EventDAO tempEvent = listOfEvents.get(i);
+			listOfEvents.set(i, listOfEvents.get(highScoreIndex));
+			listOfEvents.set(highScoreIndex, tempEvent);
+
+		}
+		return topEvents;
 	}
 
 	private int findVoteScore(UUID id) {
@@ -73,14 +102,6 @@ public class FrontPageEventService {
 		DateTime postCreatedOn = new DateTime((eventRepo.findOne(id)).getCreatedOn());
 		DateTime currentDateTime = new DateTime(DateTimeZone.UTC);
 		Hours hours = Hours.hoursBetween(postCreatedOn, currentDateTime);
-		
-		
-		Period p = new Period(postCreatedOn, currentDateTime);
-		int hoursPeriod = p.getHours();
-		int minutes = p.getMinutes();
-		System.out.println("No of HOURS"+hoursPeriod);
-		System.out.println("No of MINUTES"+minutes);
-		System.out.println("");
 		return hours.getHours();
 		
 	}
@@ -89,15 +110,4 @@ public class FrontPageEventService {
 	private int findCommentScore(UUID id) {
 		return (eventCommentsRepo.findByEventId(id)).size();
 	}
-
-
-	
-	
-	
-	//Get List of Categories the subscribed to
-	//For each post in the subscription list.. get the  scores
-	//Sort by vote score
-	
-	//no of posts per category = length of front page/subscriptioncategories
-	//select these many number of posts from each category based on score and add to list.
 }
