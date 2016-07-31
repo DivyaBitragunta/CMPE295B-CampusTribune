@@ -25,6 +25,7 @@ import com.ct.exceptions.InvalidRequestTypeException;
 import com.ct.exceptions.RequestFailedTypeException;
 import com.ct.model.Event;
 import com.ct.model.EventComment;
+import com.ct.notifications.NotificationSystem;
 import com.ct.services.EventService;
 
 @RestController
@@ -73,6 +74,16 @@ public class EventController {
 		}
 		try{
 			eventService.updateEvent(event);
+			System.out.println("Inside main");
+			String str[]=new String[2];
+			String msg  = event.getTitle()+" is updated";
+            str[0]=msg;
+			byte[] mybyte = msg.getBytes("UTF-8");
+			int bytes = mybyte.length;
+			System.out.println("message length in bytes::: "+bytes);
+			NotificationSystem ns = new NotificationSystem();
+			ns.sendNotifications(str);
+			System.out.println("Notification sent");
 			return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
 		}catch (Exception e) {
 			return new ResponseEntity<HttpStatus>(HttpStatus.INTERNAL_SERVER_ERROR);
