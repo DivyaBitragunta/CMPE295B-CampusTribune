@@ -16,6 +16,7 @@ import com.ct.dao.EventDAO;
 import com.ct.dao.PostDAO;
 import com.ct.dao.UserDAO;
 import com.ct.model.Event;
+import com.ct.model.EventComment;
 import com.ct.repositories.IEventCommentsRepository;
 import com.ct.repositories.IEventRepository;
 import com.ct.repositories.IPostCommentRepository;
@@ -33,6 +34,9 @@ public class FrontPageEventService {
 	@Autowired
 	private IEventCommentsRepository eventCommentsRepo;
 	
+	@Autowired
+	private EventService eventService;
+	
 	
 	public ArrayList<Event> getfrontPageEventData(String userId) {
 		ArrayList<Event> eventlist = new ArrayList<Event>();
@@ -41,8 +45,14 @@ public class FrontPageEventService {
 		for(String category : userSubscription) {
 			List<EventDAO> topEvents = findTopEventsForCategory(category,user.getUniversity());
 			for(EventDAO eventDAO:topEvents){
-				Event event=new Event();
-				//convert event dao to event
+				Event event = new Event(eventDAO.getId(), eventDAO.getTitle(), eventDAO.getCategory(),
+						eventDAO.getDescription(), eventDAO.getUrl(), eventDAO.getStartDate(), eventDAO.getEndDate(),
+						eventDAO.getLatitude(), eventDAO.getLongitude(), eventDAO.getAddress(), eventDAO.getEventImageS3URL(), eventDAO.getUniversity(),
+						eventDAO.getUpVoteCount(), eventDAO.getDownVoteCount(), eventDAO.getGoingCount(), eventDAO.getNotGoingCount(), eventDAO.getFollowCount(),
+						eventDAO.getCreatedBy(), eventDAO.getCreatedOn());
+				ArrayList<EventComment> listOfComments = eventService.getAllComments(event);
+				if(listOfComments!=null)
+					event.setListOfComments(listOfComments);
 				eventlist.add(event);
 			}
 		}
@@ -55,7 +65,7 @@ public class FrontPageEventService {
 		int[] scoreArray = new int[listOfEvents.size()];
 		int listIndex = 0;
 		for(EventDAO event:listOfEvents){
-			int voteScore = findVoteScore(event.getId());
+			int voteScore = event.getUpVoteCount()-event.getDownVoteCount();
 			int commentScore = findCommentScore(event.getId());
 			int followScore = event.getFollowCount();
 			int age = findAgeOfEvent(event.getId());
@@ -93,10 +103,6 @@ public class FrontPageEventService {
 		return topEvents;
 	}
 
-	private int findVoteScore(UUID id) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	private int findAgeOfEvent(UUID id) {
 		DateTime postCreatedOn = new DateTime((eventRepo.findOne(id)).getCreatedOn());

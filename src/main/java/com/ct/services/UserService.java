@@ -42,6 +42,9 @@ public class UserService {
 	
 	@Autowired
 	private FrontPagePostService frontPostService;
+	
+	@Autowired
+	private FrontPageEventService frontEventService;
 
 	Mail mail= new Mail();
 
@@ -129,8 +132,7 @@ public class UserService {
 			user.setIsNotifyFlag(userDAO.isSendNotifications());
 			user.setIsRecommendFlag(userDAO.isSendRecommendations());
 			user.setPostList(frontPostService.getfrontPagePostData(userId));
-			System.out.println("CHECK the post list size here"+ user.getPostList().size());
-			user.setEventList((ArrayList<Event>) eventService.viewEvents(userDAO.getUniversity()));
+			user.setEventList(frontEventService.getfrontPageEventData(userId));
 			user.setSubscriptionList(userDAO.getSubscriptionList());
 			return user;
 		}
