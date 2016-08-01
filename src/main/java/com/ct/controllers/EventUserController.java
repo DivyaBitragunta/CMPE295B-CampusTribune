@@ -28,7 +28,9 @@ public class EventUserController {
 		if(eventUserDAO!=null){
 				return new ResponseEntity<EventUserDAO>(eventUserDAO, HttpStatus.OK);
 		}
+		else if(eventUserDAO==null)
+			return new ResponseEntity<EventUserDAO>(HttpStatus.NO_CONTENT);
 		else
-			return new ResponseEntity<EventUserDAO>(new EventUserDAO(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<EventUserDAO>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
