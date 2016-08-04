@@ -32,16 +32,18 @@ public class FrontPagePostService {
 		UserDAO user = userRepo.findById(userId);
 		ArrayList<String> userSubscription = user.getSubscriptionList();
 		for (String category : userSubscription) {
+			System.out.println("CATEGORY"+category);
 			List<PostDAO> topPosts = findTopPostsForCategory(category,
 					user.getUniversity());
 			for(PostDAO post:topPosts){
-				postlist.add(post);
+				if(!post.getIsAlert())
+					postlist.add(post);
 			}
 				
 		}
 		List<PostDAO> listOfAlerts= new ArrayList<PostDAO>();
 		try{
-			listOfAlerts= postRepo.findTop3ByIsAlertOrderByCreatedOnDesc();
+			listOfAlerts= postRepo.findTop3ByUniversityAndIsAlertOrderByCreatedOnDesc(user.getUniversity(), true);
 		}catch (Exception e){
 			System.out.println("No Alerts in the repo!");
 		}
@@ -69,7 +71,6 @@ public class FrontPagePostService {
 			int age = findAgeOfPost(post.getId());
 			int cumulativeScore = voteScore + commentScore + followScore - age;
 			scoreArray[listIndex++] = cumulativeScore;
-			System.out.println("SCORE"+cumulativeScore);
 
 		}
 

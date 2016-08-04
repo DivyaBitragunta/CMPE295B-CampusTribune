@@ -32,13 +32,12 @@ public class UserController {
 		
 	}
 	
-	@RequestMapping(value="/user-profile/{userId}", method = RequestMethod.GET, produces ="application/json")
-    public ResponseEntity<UserDAO> getUser(@PathVariable("userId") String userId ) {
+	@RequestMapping(value="/front-page/{userId}", method = RequestMethod.GET, produces ="application/json")
+    public ResponseEntity<User> getUser(@PathVariable("userId") String userId ) {
 	  if(userService.isValid(userId))
-		  return new ResponseEntity<UserDAO>(userService.getUserDetails(userId), HttpStatus.OK);
+		  return new ResponseEntity<User>(userService.getUserDetails(userId), HttpStatus.OK);
 	  else{
-		  
-		  return new ResponseEntity<UserDAO>(HttpStatus.NOT_FOUND);
+		  return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
 	  }
     }
 	

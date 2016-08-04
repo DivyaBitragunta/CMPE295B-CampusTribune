@@ -102,10 +102,13 @@ public class UserService {
 		return true;
 	}
 
-	public UserDAO getUserDetails(String userId) {
-		UserDAO user=new UserDAO();
-		if(isValid(userId)){
-			user=userDetailsRepo.findOne(userId);			
+	public User getUserDetails(String userId) {
+		User user = new User();
+		if(isValid(userId)){	
+			user.setId(userId);
+			user.setPostList(frontPostService.getfrontPagePostData(userId));
+			user.setEventList(frontEventService.getfrontPageEventData(userId));
+			
 		}			
 		return user;
 	}
@@ -145,7 +148,6 @@ public class UserService {
 
 	public UserDAO updateUserSubscription(UserDAO updateUserDAO, String userId) {
 		UserDAO user=new UserDAO();
-		System.out.println("In update user SUBSCRIPTION");
 		user=userDetailsRepo.findOne(userId);
 		user.setSendNotifications(updateUserDAO.isSendNotifications());
 		user.setSendRecommendations(updateUserDAO.isSendRecommendations());
