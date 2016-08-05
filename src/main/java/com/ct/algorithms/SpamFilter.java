@@ -11,12 +11,16 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.logging.Logger;
+
+import com.ct.controllers.PostController;
 
 public class SpamFilter {
 
 	private static final String WORDS_FILE = "/common.txt";
 	private static final String NON_SPAM_FILE = "/nonspam.txt";
 	private static final String SPAM_FILE = "/spam.txt";
+	private static final Logger LOGGER = Logger.getLogger(SpamFilter.class.getName());
 
 	private static double spamContentCount = 0;
 	private static double nonSpamContentCount = 0;
@@ -34,16 +38,18 @@ public class SpamFilter {
 	}*/
 
 	public static void train() {
+		LOGGER.info("Training Spam Filter");
 		readWords();
 		readCollectedSpamWords();
 		readCollectedNonSpamWords();
 		calculateCollectedWordsProbability();
 		totalSpamProbability = spamContentCount / (spamContentCount + nonSpamContentCount);
 		totalNonSpamProbability = nonSpamContentCount / (spamContentCount + nonSpamContentCount);
+		LOGGER.info("Trianing spam filter completed");
 	}
 
 	public static boolean detectSpam(String inputString) {
-
+		LOGGER.info("Detecting content for spam");
 		if (inputString != null && inputString.length() > 0) {
 			String[] inputStringWords = inputString.split("\\s");
 			double spamProb = calculateSpamProbabilityForString(inputStringWords);
@@ -51,11 +57,15 @@ public class SpamFilter {
 
 			double nonSpamProb = calculateNonSpamProbabilityForString(inputStringWords);
 			System.out.println(nonSpamProb);
-			if (spamProb > nonSpamProb)
+			if (spamProb > nonSpamProb){
+				LOGGER.info("Content is spam");
 				return true;
-			else
+			}else{
+				LOGGER.info("Content is not spam");
 				return false;
+			}
 		} else {
+			LOGGER.info("Content is not spam");
 			return false;
 		}
 	}

@@ -2,6 +2,7 @@ package com.ct.services;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.ct.algorithms.Report;
 import com.ct.algorithms.Vote;
+import com.ct.controllers.PostController;
 import com.ct.dao.PostDAO;
 import com.ct.dao.PostUserDAO;
 import com.ct.model.Post;
@@ -27,6 +29,8 @@ public class PostService {
 	@Autowired
 	private IPostUserRepository postUserRepo;
 	
+	private static final Logger LOGGER = Logger.getLogger(PostService.class.getName());
+	
 	public PostService() {
 		super();
 	}
@@ -42,6 +46,7 @@ public class PostService {
 		postDAO.setCreatedOn(dt.toString(ISODateTimeFormat.dateTime().withZoneUTC()));
 		postDAO.setLastEditedOn(dt.toString(ISODateTimeFormat.dateTime().withZoneUTC()));
 		if (postRepo.save(postDAO) != null) {
+			LOGGER.info("Post created");
 			post.setId(postDAO.getId());
 			post.setCreatedOn(postDAO.getCreatedOn());
 			post.setLastEditedOn(postDAO.getLastEditedOn());
@@ -54,6 +59,7 @@ public class PostService {
 		PostDAO postDAO = new PostDAO();
 		postDAO = postRepo.findOne(id);
 		post = setPostObj(post, postDAO);
+		LOGGER.info("Post fetched");
 		return post;
 
 	}
@@ -66,6 +72,7 @@ public class PostService {
 		DateTime dt = new DateTime(DateTimeZone.UTC);
 		postDAO.setLastEditedOn(dt.toString(ISODateTimeFormat.dateTime().withZoneUTC()));
 		if(postRepo.save(postDAO)!=null){
+			LOGGER.info("Post updated");
 			setPostObj(post, postDAO);
 			post.setLastEditedOn(postDAO.getLastEditedOn());
 		}
@@ -76,7 +83,7 @@ public class PostService {
 		PostDAO postDAO = new PostDAO();
 		postDAO = postRepo.findById(id);
 		postRepo.delete(postDAO);
-
+		LOGGER.info("Post deleted");
 	}
 
 	public ArrayList<Post> getPostsForCategory(String category,String university) {
@@ -91,6 +98,7 @@ public class PostService {
 			post = setPostObj(post, postDAO);
 			posts.add(post);
 		}
+		LOGGER.info("Posts fetched");
 		return posts;
 	}
 
@@ -114,6 +122,7 @@ public class PostService {
 		DateTime dt = new DateTime(DateTimeZone.UTC);
 		postDAO.setLastEditedOn(dt.toString(ISODateTimeFormat.dateTime().withZoneUTC()));
 		if (postRepo.save(postDAO) != null) {
+			LOGGER.info("Post voted");
 			setPostObj(post, postDAO);
 			post.setVoteScore(postDAO.getVoteScore());
 			post.setLastEditedOn(postDAO.getLastEditedOn());
@@ -121,11 +130,13 @@ public class PostService {
 			if(userActionsDAO!=null){
 				updateUserVoteActions(voteType,post.getId(),userActionsDAO);
 				postUserRepo.save(userActionsDAO);
+				LOGGER.info("User actions saved");
 			}else{
 				PostUserDAO userActionsDAO1 = new PostUserDAO();
 				userActionsDAO1.setUser(user_id);
 				updateUserVoteActions(voteType,post.getId(),userActionsDAO1);
 				postUserRepo.save(userActionsDAO1);
+				LOGGER.info("User Actions saved");
 			}
 			
 		}
@@ -138,12 +149,14 @@ public class PostService {
 		int newReportScore=Report.updateReportScore(postDAO.getReportScore());
 		if(Report.removeContent(newReportScore)){
 			postRepo.delete(postDAO.getId());
+			LOGGER.info("Post deleted");
 			return null;
 		}else{
 			DateTime dt = new DateTime(DateTimeZone.UTC);
 			postDAO.setLastEditedOn(dt.toString(ISODateTimeFormat.dateTime().withZoneUTC()));
 			postDAO.setReportScore(newReportScore);
 			if(postRepo.save(postDAO)!=null){
+				LOGGER.info("Post reported");
 				setPostObj(post, postDAO);
 				post.setReportScore(postDAO.getReportScore());
 				post.setLastEditedOn(postDAO.getLastEditedOn());
@@ -151,11 +164,13 @@ public class PostService {
 				if(userActionsDAO!=null){
 					userActionsDAO.getReportedPosts().add(post.getId());
 					postUserRepo.save(userActionsDAO);
+					LOGGER.info("User Actions saved");
 				}else{
 					PostUserDAO userActionsDAO1 = new PostUserDAO();
 					userActionsDAO1.setUser(user_id);
 					userActionsDAO1.getReportedPosts().add(post.getId());
 					postUserRepo.save(userActionsDAO1);
+					LOGGER.info("User actions Saved");
 				}
 				
 			}
@@ -176,6 +191,7 @@ public class PostService {
 			}
 	    	postUserRepo.save(userActionsDAO);
 			postRepo.save(postDAO);
+			LOGGER.info("Post follow updated");
 		} else {
 			PostUserDAO userActionsDAO1 = new PostUserDAO();
 			userActionsDAO1.setUser(user_id);
@@ -183,6 +199,7 @@ public class PostService {
 			postDAO.setFollowCount(postDAO.getFollowCount()+1);
 			postUserRepo.save(userActionsDAO1);
 			postRepo.save(postDAO);
+			LOGGER.info("Post follow updated");
 		}
 	}
 	
@@ -195,18 +212,24 @@ public class PostService {
 		postUser.setReportedPosts(postUserDAO.getReportedPosts());
 		postUser.setFollowingPosts(postUserDAO.getFollowingPosts());
 		postUser.setReportedComments(postUserDAO.getReportedComments());
+		LOGGER.info("User actions fetched");
 		return postUser;
 	}
 	
 	private void  updateUserVoteActions(int voteType,int postid,PostUserDAO userActionsDAO){
-		if(voteType==1)
+		if(voteType==1){
+			LOGGER.info("Post Upvoted");
 			userActionsDAO.getUpVotedPosts().add(postid);
-		else if(voteType==2)
+		}else if(voteType==2){
+			LOGGER.info("Post Upvote removed");
 			userActionsDAO.getUpVotedPosts().remove(Integer.valueOf(postid));
-		else if(voteType==3)
+		}else if(voteType==3){
+			LOGGER.info("Post Downvoted");
 			userActionsDAO.getDownVotedPosts().add(postid);
-		else if(voteType==4)
+		}else if(voteType==4){
+			LOGGER.info("Post Downvote removed");
 			userActionsDAO.getDownVotedPosts().remove(Integer.valueOf(postid));
+		}
 	}
 
 	private Integer generateId() {

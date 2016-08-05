@@ -2,6 +2,7 @@ package com.ct.services;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -24,6 +25,8 @@ public class PostCommentService {
 	
 	@Autowired
 	private IPostUserRepository postUserRepo;
+	
+	private static final Logger LOGGER = Logger.getLogger(PostService.class.getName());
 
 	public PostCommentService() {
 		super();
@@ -40,6 +43,7 @@ public class PostCommentService {
 		postCommentDAO.setCreatedOn(dt.toString(ISODateTimeFormat.dateTime().withZoneUTC()));
 		postCommentDAO.setLastEditedOn(dt.toString(ISODateTimeFormat.dateTime().withZoneUTC()));
 		if (commentRepo.save(postCommentDAO) != null) {
+			LOGGER.info("Comment created");
 			postComment.setId(postCommentDAO.getId());
 			postComment.setCreatedOn(postCommentDAO.getCreatedOn());
 			postComment.setLastEditedOn(postCommentDAO.getLastEditedOn());
@@ -52,6 +56,7 @@ public class PostCommentService {
 		PostCommentDAO postCommentDAO = new PostCommentDAO();
 		postCommentDAO = commentRepo.findByIdAndPostId(id, postId);
 		postComment = setCommentObj(postComment, postCommentDAO);
+		LOGGER.info("Comment fetched");
 		return postComment;
 	}
 
@@ -64,7 +69,7 @@ public class PostCommentService {
 			postComment=setCommentObj(postComment, postCommentDAO);
 			postComments.add(postComment);
 		}
-
+		LOGGER.info("Comments fetched");
 		return postComments;
 	}
 
@@ -78,6 +83,7 @@ public class PostCommentService {
 			setCommentObj(postComment, postCommentDAO);
 			postComment.setLastEditedOn(postCommentDAO.getLastEditedOn());
 		}
+		LOGGER.info("Post updated");
 		return postComment;
 
 	}
@@ -86,6 +92,7 @@ public class PostCommentService {
 		PostCommentDAO postCommentDAO = new PostCommentDAO();
 		postCommentDAO = commentRepo.findByIdAndPostId(id, postId);
 		commentRepo.delete(postCommentDAO);
+		LOGGER.info("Post deleted");
 	}
 	
 	public PostComment reportComment(PostComment comment,String userId){
@@ -94,12 +101,14 @@ public class PostCommentService {
 		int newReportScore=Report.updateReportScore(postCommentDAO.getReportScore());
 		if(Report.removeContent(newReportScore)){
 			commentRepo.delete(postCommentDAO.getId());
+			LOGGER.info("Comment deleted");
 			return null;
 		}else{
 			DateTime dt = new DateTime(DateTimeZone.UTC);
 			postCommentDAO.setLastEditedOn(dt.toString(ISODateTimeFormat.dateTime().withZoneUTC()));
 			postCommentDAO.setReportScore(newReportScore);
 			if(commentRepo.save(postCommentDAO)!=null){
+				LOGGER.info("Comment Reported");
 				setCommentObj(comment, postCommentDAO);
 				comment.setReportScore(postCommentDAO.getReportScore());
 				comment.setLastEditedOn(postCommentDAO.getLastEditedOn());
@@ -107,11 +116,13 @@ public class PostCommentService {
 				if(userActionsDAO!=null){
 					userActionsDAO.getReportedComments().add(comment.getId());
 					postUserRepo.save(userActionsDAO);
+					LOGGER.info("User Action saved");
 				}else{
 					PostUserDAO userActionsDAO1 = new PostUserDAO();
 					userActionsDAO1.setUser(userId);
 					userActionsDAO1.getReportedPosts().add(comment.getId());
 					postUserRepo.save(userActionsDAO1);
+					LOGGER.info("User Action saved");
 				}
 			}
 			return comment;
