@@ -16,4 +16,5 @@ public interface IEventRepository extends MongoRepository<EventDAO, UUID> {
 	public List<EventDAO> findFirst10ByOrderByCreatedOnDesc();
 	public List<EventDAO> findFirst10ByUniversityOrderByLastUpdatedOnDesc(String university);
 	public List<EventDAO> findTop10ByCategoryAndUniversityOrderByStartDateDesc(String category, String university);
+	//public List<EventDAO> findFirst10ByUniversityAndReportCountValueLessThan10OrderByLastUpdatedOnDesc(String univeristy);
 }

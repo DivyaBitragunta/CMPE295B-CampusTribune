@@ -94,6 +94,7 @@ public class EventService {
 	public ArrayList<Event> viewEvents(String university){
 		List<EventDAO> events = new ArrayList<>();
 		events = eventRepository.findFirst10ByUniversityOrderByLastUpdatedOnDesc(university);
+		//events = eventRepository.findFirst10ByUniversityAndReportCountValueLessThan10OrderByLastUpdatedOnDesc(university);
 		if(events.size()>0){
 			ArrayList<Event> listOfEvents = new ArrayList<>(events.size());
 			for(EventDAO each: events){
@@ -151,23 +152,26 @@ public class EventService {
 	private void updateDAOUsingEntity(Event event){
 		
 		if(event.getUpdatedBy().equals(event.getCreatedBy())){
-			EventDAO eventDAO = new EventDAO();
-			eventDAO.setId(event.getId());
-			eventDAO.setTitle(event.getTitle());
-			eventDAO.setCategory(event.getCategory());
-			eventDAO.setDescription(event.getDescription());
-			eventDAO.setUrl(event.getUrl());
-			eventDAO.setStartDate(event.getStartDate());
-			eventDAO.setEndDate(event.getEndDate());
-			eventDAO.setLatitude(event.getLatitude());
-			eventDAO.setLongitude(event.getLongitude());
-			eventDAO.setAddress(event.getAddress());
-			eventDAO.setEventImageS3URL(event.getEventImageS3URL());
-			eventDAO.setCreatedBy(event.getCreatedBy());
-			eventDAO.setCreatedOn(event.getCreatedOn());
-			DateTime dt = new DateTime(DateTimeZone.UTC);		
-			eventDAO.setLastUpdatedOn(dt.toString(ISODateTimeFormat.dateTime().withZoneUTC()));
-			eventRepository.save(eventDAO);
+			EventDAO eventDAO = eventRepository.findOne(event.getId());
+			if(eventDAO!=null){
+				eventDAO.setTitle(event.getTitle());
+				//eventDAO.setCategory(event.getCategory());
+				eventDAO.setDescription(event.getDescription());
+	//			eventDAO.setUrl(event.getUrl());
+	//			eventDAO.setStartDate(event.getStartDate());
+	//			eventDAO.setEndDate(event.getEndDate());
+	//			eventDAO.setLatitude(event.getLatitude());
+	//			eventDAO.setLongitude(event.getLongitude());
+	//			eventDAO.setAddress(event.getAddress());
+	//			eventDAO.setEventImageS3URL(event.getEventImageS3URL());
+	//			eventDAO.setCreatedBy(event.getCreatedBy());
+	//			eventDAO.setCreatedOn(event.getCreatedOn());
+				DateTime dt = new DateTime(DateTimeZone.UTC);		
+				eventDAO.setLastUpdatedOn(dt.toString(ISODateTimeFormat.dateTime().withZoneUTC()));
+				eventRepository.save(eventDAO);
+			}
+			else
+				return;
 		}
 		
 		if(event.isUpvoted())
