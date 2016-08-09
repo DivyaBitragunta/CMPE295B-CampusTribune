@@ -1,10 +1,12 @@
 # CMPE295B-CampusTribune
 Application Server for Campus Tribune Mobile App
 
-##Developed using Java, Springboot, REST APIs, Java Messaging Services, Spring data mongodb and spring security frameworks
-##Uses MongoDB NoSQL data base
-##Provides Token based authentication system
-##Uses Google Cloud Messaging for notification services
+```
+	Developed using Java, Springboot, REST APIs, Java Messaging Services, Spring data mongodb and spring security frameworks
+	Uses MongoDB NoSQL data base
+	Provides Token based authentication system
+	Uses Google Cloud Messaging for notification services
+```
 
 Git Guidelines for contributors:
 
