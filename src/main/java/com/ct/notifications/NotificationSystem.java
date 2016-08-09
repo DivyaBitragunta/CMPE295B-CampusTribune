@@ -13,7 +13,6 @@ import java.net.URL;
 
 public class NotificationSystem {
 	
-    public static final String API_KEY = "AIzaSyAYnkO-vQ7G9DGgbjD06WLXA_pO855tyFY";
     
 	
 	public void sendNotifications(String[] str){
@@ -36,8 +35,9 @@ public class NotificationSystem {
 
             // Create connection to send GCM Message request.
             URL url = new URL("https://android.googleapis.com/gcm/send");
+            Constants constants = new Constants();
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestProperty("Authorization", "key=" + API_KEY);
+            conn.setRequestProperty("Authorization", "key=" + constants.API_KEY);
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
