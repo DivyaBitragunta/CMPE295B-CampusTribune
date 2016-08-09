@@ -42,6 +42,10 @@ Pre-configuartions:
 			#spring.data.mongodb.host = <EC2 instance DNS>
 			#spring.data.mongodb.port = <port number>
 			#spring.data.mongodb.database = <dbname>
+			
+ GCM Server API Key:
+  Set the server API key for GCM Service corresponding to the google-services.json client file.
+  Filr Path : CMPE295B-CampusTribune/src/main/java/com/ct/notifications/NotificationSystem.java
 
 ```
 ```
